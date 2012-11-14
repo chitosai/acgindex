@@ -6,7 +6,7 @@ from base.utility import *
 
 # 准备需要的正则表达式
 re_name_cn = re.compile('<li><span class="tip">中文名: </span>(.+)</li>')
-re_h1      = re.compile('<h1 class="nameSingle"><a href="/subject/(\d+)" title=".*">(.+)</a></h1>')
+re_h1      = re.compile('<h1 class="nameSingle">[\r\n\s]*<a href="/subject/(\d+)" title=".*">(.+)</a>[\r\n\s]*(?:<small class="grey">.+</small>)*[\s]*</h1>')
 re_tags    = re.compile('<li><span class="tip"(?: style="visibility:hidden;")?>别名: </span>(.+?)</li>')
 re_cate    = re.compile('<a href="/(\w+)"\s?class="focus">')
 re_cover   = re.compile('<a href="(.+?)" title=".+?" alt=".+?" class="thickbox cover">')
@@ -95,18 +95,17 @@ def FetchSubjectFromBangumi( id ):
 	# 获取TAGS
 	m = re.findall( re_tags, c )
 	if m :
-		ai = Ai()
 		for each in m:
 			ai.AddTag( each, eid )
 
 	del ai
 
 	# 获取图片
-	m = re.search( re_cover, c )
-	if m:
-		if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
-	else:
-		return '没有封面'
+	# m = re.search( re_cover, c )
+	# if m:
+	# 	if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
+	# else:
+	# 	return '没有封面'
 
 	# 成功获取返回True
 	return True
@@ -179,7 +178,7 @@ def FetchEpOfAnEntryFromBangumi( id, bgmid ):
 
 
  
-
-#FetchBangumi(40001,40010)
+FetchBangumi(44508,44508)
+#FetchBangumi(43601,50000)
 #print FetchSubjectFromBangumi(755)
-FetchEpFromBangumi(3281, 43566)
+#FetchEpFromBangumi(43567, 43566)

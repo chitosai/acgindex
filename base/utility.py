@@ -14,7 +14,7 @@ socket.setdefaulttimeout(15)
 
 # 初始化普通的只带一个UA的Header
 Amagami = urllib2.build_opener(
-	urllib2.ProxyHandler({'http': '121.33.249.170:8080'})
+	# urllib2.ProxyHandler({'http': '121.33.249.170:8080'})
 )
 Amagami.addheaders = [ ACGINDEX_UA ]
 urllib2.install_opener( Amagami )
@@ -76,14 +76,14 @@ class Haruka:
 
 	# 抓图
 	@staticmethod
-	def GetImage( id, cid, url, retry = 3 ):
+	def GetImage( eid, cid, url, retry = 3 ):
 		global PATH_COVER
 		try:
-			urllib.urlretrieve( url, PATH_COVER + str(id) + '_' + str(cid) + '.jpg')
+			urllib.urlretrieve( url, PATH_COVER + str(eid) + '_' + str(cid) + '.jpg')
 			return True
 		except:
 			if retry > 0 :
-				return Haruka.GetImage( id, cid, url, retry-1 )
+				return Haruka.GetImage( eid, cid, url, retry-1 )
 			else:
 				return False
 
@@ -175,12 +175,13 @@ class Ai:
 	# 添加tag - 新TAG时写入LINK表
 	def AddTag( self, name, eid ):
 		sql = "INSERT INTO `tags` ( `name` ) VALUES ( %s )"
-		self.Query( sql, name )
+		self.Query( sql, (name,) )
 		tid = self._.insert_id()
+		
 		# tid=0表示TAG已存在，那么获取已存在的TAGID
 		if tid == 0 : 
-			self.Query( "SELECT `tid` FROM `tags` WHERE `name` = %s", name)
-			tid = self.c.fetchone()[0]
+			tid = self.Query( "SELECT `tid` FROM `tags` WHERE `name` = %s", name)
+						
 		self.LinkTAGtoENTRY( tid, eid )
 
 	# 添加 TAG 与 ENTRY 的关联
@@ -259,10 +260,9 @@ class Tsukasa:
 	def debug( message ):
 		Tsukasa.log( message )
 		try:
-			f = open( PATH_LOG + time.strftime('%Y-%m-%d.log',time.localtime(time.time())), 'a+')
+			f = open( PATH_LOG + time.strftime('%Y-%m-%d.log', time.localtime(time.time())), 'a+')
 		except:
-			f = open( PATH_LOG + time.strftime('%Y-%m-%d.log',time.localtime(time.time())), 'w+')
+			f = open( PATH_LOG + time.strftime('%Y-%m-%d.log', time.localtime(time.time())), 'w+')
 		finally:
 			f.write( Tsukasa.GetTime() + message + '\n' )
 			f.close() 
-
