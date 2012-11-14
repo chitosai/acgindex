@@ -110,7 +110,7 @@ class Ai:
 	'七咲逢 Nanasaki Ai'
 
 	# 构造函数时连接数据库
-	def __init__(self, dbname = DB_BGM):
+	def __init__(self, dbname = DB_NAME):
 		try:
 			self._ = MySQLdb.connect( DB_HOST, DB_USER, DB_PASS, dbname, charset="utf8" )
 			self.c  = self._.cursor()

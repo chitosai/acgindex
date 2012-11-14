@@ -1,0 +1,55 @@
+##
+## 作品条目表
+##
+DROP TABLE IF EXISTS `entry`;
+CREATE TABLE `entry` (
+`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '序号',
+`name_cn` VARCHAR( 255 ) NOT NULL COMMENT '中文名',
+`name_jp` VARCHAR( 255 ) NOT NULL COMMENT '日文名',
+`cid` TINYINT NOT NULL COMMENT '所属分类',
+`bgm` INT NOT NULL ,
+`url1` VARCHAR( 255 ) DEFAULT '' NOT NULL ,
+`url2` VARCHAR( 255 ) DEFAULT '' NOT NULL ,
+`url3` VARCHAR( 255 ) DEFAULT '' NOT NULL ,
+`total` INT NOT NULL COMMENT '总话数',
+INDEX ( `name_cn` ),
+UNIQUE( `bgm` )
+) ENGINE = MYISAM ;
+
+
+##
+## 每话
+##
+DROP TABLE IF EXISTS `ep`;
+CREATE TABLE `ep` (
+`pid` INT NOT NULL COMMENT '属于哪部作品',
+`epid` INT NOT NULL COMMENT '第几话',
+`name_cn` VARCHAR( 255 ) NOT NULL COMMENT '这话的中文名',
+`name_jp` VARCHAR( 255 ) NOT NULL COMMENT '日文名',
+`url1` VARCHAR( 255 ) DEFAULT '' NOT NULL ,
+`url2` VARCHAR( 255 ) DEFAULT '' NOT NULL ,
+`url3` VARCHAR( 255 ) DEFAULT '' NOT NULL ,
+INDEX ( `pid`, `epid` )
+) ENGINE = MYISAM ;
+
+
+##
+## name与tag_id对应表
+##
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags` (
+`name` VARCHAR( 255 ) NOT NULL COMMENT '中文名',
+`tid` INT NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'TAG_ID',
+UNIQUE ( `name`  )
+) ENGINE = MYISAM ;
+
+
+##
+## tag_id与id对应表
+##
+DROP TABLE IF EXISTS `link`;
+CREATE TABLE `link` (
+`tid` INT NOT NULL COMMENT 'TAG_ID',
+`eid` INT NOT NULL COMMENT 'ENTRY_ID',
+INDEX ( `tid`, `eid` )
+) ENGINE = MYISAM ;

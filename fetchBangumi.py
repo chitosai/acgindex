@@ -100,12 +100,13 @@ def FetchSubjectFromBangumi( id ):
 
 	del ai
 
-	# 获取图片
-	# m = re.search( re_cover, c )
-	# if m:
-	# 	if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
-	# else:
-	# 	return '没有封面'
+	if not DEBUG:
+		# 获取图片
+		m = re.search( re_cover, c )
+		if m:
+			if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
+		else:
+			return '没有封面'
 
 	# 成功获取返回True
 	return True
