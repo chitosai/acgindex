@@ -9,11 +9,7 @@ DEBUG = True
 
 # 数据库配置
 DB_HOST = 'localhost'
-DB_USER = 'root'
-DB_PASS = '111000'
-
 DB_BGM  = 'acgindex'
-DB_BILI = 'bilibili'
 
 # 存储路径
 PATH_COVER   = 'cover\\'

@@ -6,6 +6,7 @@ import time
 import socket
 
 from config import *
+from accounts import *
 from sys import stderr
 from StringIO import StringIO
 
@@ -189,50 +190,9 @@ class Ai:
 		sql = "INSERT INTO `link` ( `tid`, `eid` ) VALUES ( %s, %s )"
 		self.Query( sql, args )
 
-
-	#
-	# BILI
-	#
-
-	# 添加条目
-	def AddBiliEntry( self, *args ):
-		sql = "INSERT INTO `_bili_` (`av`, `cid`, `title`, `memberonly`) VALUES ( %s, %s, %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 记录TAG
-	def AddBiliTag( self, *args ):
-		sql = "INSERT INTO `_bili_tags_` VALUES ( %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-
-	#
-	# RW
-	#
-
-	# 添加条目
-	def AddRwEntry( self, *args ):
-		sql = "INSERT INTO `_rw_` VALUES ( %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 添加章节
-	def AddRwEp( self, *args ):
-		sql = "INSERT INTO `_rw_ep_` VALUES ( %s, %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 添加标签
-	def AddRwTags( self, *args ):
-		sql = "INSERT INTO `_rw_tags_` VALUES ( %s, %s )"
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
 	# 按中文名取条目
 	def GetRwByName( self, name ):
 		sql = "SELECT * FROM `_rw_ep_` INNER JOIN `_rw_tags_` ON `_rw_ep_`.`rwid` = `_rw_tags_`.`rwid` WHERE `_rw_tags_`.`name` LIKE '%s%'"
-
 
 	# 获取TAG表
 	def GetRwTags( self ):
