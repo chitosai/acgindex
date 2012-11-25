@@ -87,7 +87,7 @@ def FetchSubjectFromBangumi( id ):
 	ai = Ai()
 	eid = ai.AddEntry(name_cn, name_jp, cid, bgm, total)
 
-	if eid == 0:
+	if eid == ERROR_DK:
 		return '重复条目，跳过'
 	elif eid == False:
 		return '写入数据库出错'
@@ -100,12 +100,13 @@ def FetchSubjectFromBangumi( id ):
 
 	del ai
 
-	# 获取图片
-	# m = re.search( re_cover, c )
-	# if m:
-	# 	if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
-	# else:
-	# 	return '没有封面'
+	if not DEBUG:
+		# 获取图片
+		m = re.search( re_cover, c )
+		if m:
+			if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
+		else:
+			return '没有封面'
 
 	# 成功获取返回True
 	return True
@@ -177,8 +178,6 @@ def FetchEpOfAnEntryFromBangumi( id, bgmid ):
 	return True
 
 
- 
-FetchBangumi(44508,44508)
-#FetchBangumi(43601,50000)
-#print FetchSubjectFromBangumi(755)
+
+FetchBangumi(45001,54001)
 #FetchEpFromBangumi(43567, 43566)

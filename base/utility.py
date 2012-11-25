@@ -6,6 +6,7 @@ import time
 import socket
 
 from config import *
+from accounts import *
 from sys import stderr
 from StringIO import StringIO
 
@@ -109,13 +110,13 @@ class Ai:
 	'七咲逢 Nanasaki Ai'
 
 	# 构造函数时连接数据库
-	def __init__(self, dbname = DB_BGM):
+	def __init__(self, dbname = DB_NAME):
 		try:
 			self._ = MySQLdb.connect( DB_HOST, DB_USER, DB_PASS, dbname, charset="utf8" )
 			self.c  = self._.cursor()
 		except:
-			print '与数据库连接时出错'
-			return False
+			Tsukasa.debug('数据库连接出错')
+			exit(1)
 
 	# 析构时关闭数据库
 	def __del__(self):
@@ -123,35 +124,41 @@ class Ai:
 		self._.close()
 
 
-	# 公用查询函数，负责处理返回值
-	def Query( self, sql, data = ''):
+	# 查询
+	def Query( self, sql, data = None):
 		try:
-			if type(data) == tuple : 
+			if data : 
 				return self.c.execute( sql, data )
 			else : 
 				self.c.execute( sql )
-				return self.c.fetchall()
+		except Exception, e:
+			return False # 返回False表示数据库出错
+		finally:
+			return self.c.fetchall()
+
+
+	# 执行
+	def Run( self, sql, data ):
+		try:
+			self.c.execute( sql, data )
+			return self._.insert_id()
 		except Exception, e:
 			# 1062是UNIQUE键重复，这是正常情况
-			if e[0] == 1062 : return True
+			if e[0] == 1062 : return ERROR_DK
+			Tsukasa.debug(e)
 			# 其他错误要捕获
 			return False # 返回False表示数据库出错
 
-	#
-	# BGM
-	#
+
 	# 根据id取一个条目
 	def GetEntryById( self, id ):
 		sql = "SELECT * FROM `entry` WHERE `id` = %s"
-		r = self.Query( sql, id )
-		if r > 0 :
-			return self.c.fetchone()
-		else:
-			return 0
+		return self.Query( sql, id )
 
 	# 按分类获取
-	def GetAnimeEntry( self ):
-		sql = "SELECT `id`,`name_cn`,`url2` FROM `entry` WHERE `cid` = 2"
+	def GetEntryByCategory( self, category_name ):
+		global CATE_BGM
+		sql = "SELECT `id`,`name_cn` FROM `entry` WHERE `cid` = " + str(CATE_BGM[category_name])
 		return self.Query( sql )
 
 	# 取TAG列表
@@ -163,76 +170,28 @@ class Ai:
 	# 添加entry
 	def AddEntry( self, *args ):
 		sql = "INSERT INTO `entry` (`name_cn` ,`name_jp` ,`cid` , `bgm` ,`total`) VALUES ( %s, %s, %s, %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
+		return self.Run( sql, args )
 
 	# 添加ep
 	def AddEp( self, *args ):
 		sql = "INSERT INTO `ep` ( `pid`, `epid`, `name_jp`, `name_cn` ) VALUES ( %s, %s, %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
+		return self.Run( sql, args )
 
 	# 添加tag - 新TAG时写入LINK表
 	def AddTag( self, name, eid ):
 		sql = "INSERT INTO `tags` ( `name` ) VALUES ( %s )"
-		self.Query( sql, (name,) )
-		tid = self._.insert_id()
+		tid = self.Run( sql, name )
 		
 		# tid=0表示TAG已存在，那么获取已存在的TAGID
 		if tid == 0 : 
-			tid = self.Query( "SELECT `tid` FROM `tags` WHERE `name` = %s", name)
+			tid = self.Query( "SELECT `tid` FROM `tags` WHERE `name` = %s", name)[0][0]
 						
 		self.LinkTAGtoENTRY( tid, eid )
 
 	# 添加 TAG 与 ENTRY 的关联
 	def LinkTAGtoENTRY( self, *args ):
 		sql = "INSERT INTO `link` ( `tid`, `eid` ) VALUES ( %s, %s )"
-		self.Query( sql, args )
-
-
-	#
-	# BILI
-	#
-
-	# 添加条目
-	def AddBiliEntry( self, *args ):
-		sql = "INSERT INTO `_bili_` (`av`, `cid`, `title`, `memberonly`) VALUES ( %s, %s, %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 记录TAG
-	def AddBiliTag( self, *args ):
-		sql = "INSERT INTO `_bili_tags_` VALUES ( %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-
-	#
-	# RW
-	#
-
-	# 添加条目
-	def AddRwEntry( self, *args ):
-		sql = "INSERT INTO `_rw_` VALUES ( %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 添加章节
-	def AddRwEp( self, *args ):
-		sql = "INSERT INTO `_rw_ep_` VALUES ( %s, %s, %s ) "
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 添加标签
-	def AddRwTags( self, *args ):
-		sql = "INSERT INTO `_rw_tags_` VALUES ( %s, %s )"
-		if self.Query( sql, args ) : return self._.insert_id()
-		else : return False
-
-	# 按中文名取条目
-	def GetRwByName( self, name ):
-		sql = "SELECT * FROM `_rw_ep_` INNER JOIN `_rw_tags_` ON `_rw_ep_`.`rwid` = `_rw_tags_`.`rwid` WHERE `_rw_tags_`.`name` LIKE '%s%'"
-
+		return self.Run( sql, args )
 
 	# 获取TAG表
 	def GetRwTags( self ):

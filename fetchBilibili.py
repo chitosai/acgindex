@@ -11,37 +11,6 @@ re_title = re.compile('<h2>(.+?)</h2>')
 re_tags  = re.compile("kwtags\(\[(.+?)?\],\[(.+?)?\]\);")
 
 
-
-# 从bili抓序号从start到end的条目
-def FetchBilibili( start, end ):
-	end += 1
-
-	# 开始循环之前，先准备一份登录状态的cookie
-	r = LoginBilibili()
-
-	# 如果登录不成功立刻退出，不开始主循环
-	if r != True:
-		Tsukasa.debug(r)
-		return r
-
-
-	# 开始循环
-	for i in range( start, end ):
-		i = str(i)
-
-		r = FetchAvFromBili( i )
-		if type(r) == str:
-			Tsukasa.debug( i + ' ' + r )
-		elif r == True:
-			Tsukasa.log( i + ' success' )
-		elif not r:
-			Tsukasa.log( i + ' dosent exists' )
-
-		time.sleep(3)
-
-
-
-
 # 根据id从bili抓一个视频
 def FetchAvFromBili( id ):
 	global URL_BILI, ERROR_NET
@@ -69,8 +38,6 @@ def FetchAvFromBili( id ):
 	return FetchInfoFromBili( id, c )
 
 
-
-
 # 带登录状态访问bili
 def FetchAvFromBiliWithLogin( id ):
 	global URL_BILI, ERROR_NET, FILE_COOKIE_BILI
@@ -87,55 +54,12 @@ def FetchAvFromBiliWithLogin( id ):
 
 
 
-
-# 抓需要的信息
-def FetchInfoFromBili( id, content, memberonly = 0 ):
-	global CATE_BILI
-
-	# av号
-	av = re.search( re_av, content )
-	if not av : return -2
-
-	# 所属分类
-	cate = re.search( re_cate, content )
-	if not cate : return '找不到所属分类'
-
-	# 标题
-	title = re.search( re_title, content )
-	if not title : return '找不到标题'
-
-	# 写数据库
-	ai = Ai()
-	av = ai.AddBiliEntry( av.group(1), CATE_BILI[cate.group(1)], title.group(1), memberonly )
-	if av == 0 :
-		return '重复插入'
-	elif av == False:
-		return '写入条目数据时失败'
-
-	# 获取TAG
-	tags = re.search( re_tags, content )
-	if not tags : return 'ERROR FETCHING TAGS'
-
-	# 检查是否确实有TAGS
-	if tags.group(1) != None:
-		tags = tags.group(1).split(',')
-
-		# 写TAG
-		for tag in tags:
-			r = ai.AddBiliTag( av, tag[1:-1] )
-
-	del ai
-
-	# 大丈夫！
-	return True
-
-
-
 # 登录bili
 def LoginBilibili():
 	global FILE_COOKIE_BILI, ERROR_NET
 
-	c = Haruka.GetWithCookie( 'https://secure.bilibili.tv/login', FILE_COOKIE_BILI, 'userid=ithec&pwd=$s^IgW#Lv3*a50W9t1$7w8b3&keeptime=2592000&act=login&gourl=http://www.bilibili.tv/')
+	c = Haruka.GetWithCookie( 'https://secure.bilibili.tv/login', FILE_COOKIE_BILI, 
+							  'userid=' + BILI_USER + '&pwd=' + BILI_PASS + '&keeptime=2592000&act=login&gourl=http://www.bilibili.tv/')
 	if not c: return ERROR_NET
 
 	# 确认登录成功
@@ -144,23 +68,3 @@ def LoginBilibili():
 	else:
 		return '登录返回的状态有点奇怪，检查一下!'
 
-
-
-
-
-# 修复LOG里记录的某些视频...
-def fix():
-	f = open('log\\2012-08-01.log','r').readlines()
-	for eachline in f:
-		m = re.search('\[\d{2}:\d{2}:\d{2}\] (\d+)找不到av号', eachline)
-		if m:
-			r = FetchAvFromBili(m.group(1))
-			Tsukasa.log('已补救 ' + m.group(1))
-
-
-
-
-# bili的1是公告，爬数据时要从2开始
-fix()
-#FetchBilibili(250001, 260000)
-#print FetchAvFromBili('321354')
