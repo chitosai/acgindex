@@ -87,7 +87,7 @@ def FetchSubjectFromBangumi( id ):
 	ai = Ai()
 	eid = ai.AddEntry(name_cn, name_jp, cid, bgm, total)
 
-	if eid == 0:
+	if eid == ERROR_DK:
 		return '重复条目，跳过'
 	elif eid == False:
 		return '写入数据库出错'
@@ -179,7 +179,5 @@ def FetchEpOfAnEntryFromBangumi( id, bgmid ):
 
 
  
-FetchBangumi(44508,44508)
-#FetchBangumi(43601,50000)
-#print FetchSubjectFromBangumi(755)
+FetchBangumi(45001,54001)
 #FetchEpFromBangumi(43567, 43566)

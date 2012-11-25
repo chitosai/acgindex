@@ -5,10 +5,10 @@ ACGINDEX_VERSION = '0.1 Beta'
 ACGINDEX_UA = ('User-agent', 'ACGINDEX/=w= ( im just a little spider; please dont block me;)' )
 
 # DEBUG MODE
-DEBUG = True
+DEBUG = False
 
 # 数据库配置
-DB_HOST = 'localhost'
+DB_HOST = '127.0.0.1'
 DB_NAME = 'acgindex'
 
 # 存储路径
@@ -53,3 +53,4 @@ RANGE_BILI = ['music', 'part', 'bangumi']
 
 # 一些通用的出错提示
 ERROR_NET  = '网络出错，无法获取 ----------------------------------------------------[ ERROR ] '
+ERROR_DK   = 'Duplicated Key'
