@@ -113,7 +113,7 @@ class Ai:
 	def __init__(self, dbname = DB_NAME):
 		try:
 			self._ = MySQLdb.connect( DB_HOST, DB_USER, DB_PASS, dbname, charset="utf8" )
-			self.c  = self._.cursor()
+			self.c  = self._.cursor( MySQLdb.cursors.DictCursor )
 		except:
 			Tsukasa.debug('数据库连接出错')
 			exit(1)
@@ -124,17 +124,20 @@ class Ai:
 		self._.close()
 
 
+	# 通用部分
+	###
+
 	# 查询
 	def Query( self, sql, data = None):
 		try:
 			if data : 
-				return self.c.execute( sql, data )
+				self.c.execute( sql, data )
 			else : 
 				self.c.execute( sql )
+
+			return self.c.fetchall()
 		except Exception, e:
 			return False # 返回False表示数据库出错
-		finally:
-			return self.c.fetchall()
 
 
 	# 执行
@@ -145,25 +148,28 @@ class Ai:
 		except Exception, e:
 			# 1062是UNIQUE键重复，这是正常情况
 			if e[0] == 1062 : return ERROR_DK
-			Tsukasa.debug(e)
+			Tsukasa.debug( e[0] + ' : ' + e[1] )
 			# 其他错误要捕获
 			return False # 返回False表示数据库出错
 
 
+	# BGM部分
+	###
+
 	# 根据id取一个条目
 	def GetEntryById( self, id ):
 		sql = "SELECT * FROM `entry` WHERE `id` = %s"
+		return self.Query( sql, id )[0]
+
+	# 根据id取他的所有tag
+	def GetTagById( self, id ):
+		sql = "SELECT `name` FROM `tags` INNER JOIN `link` ON `link`.`tid` = `tags`.`tid` INNER JOIN `entry` ON `entry`.`id` = %s AND `entry`.`id` = `link`.`eid`"
 		return self.Query( sql, id )
 
 	# 按分类获取
 	def GetEntryByCategory( self, category_name ):
 		global CATE_BGM
 		sql = "SELECT `id`,`name_cn` FROM `entry` WHERE `cid` = " + str(CATE_BGM[category_name])
-		return self.Query( sql )
-
-	# 取TAG列表
-	def GetBgmTags( self ):
-		sql = "SELECT * FROM `tags`"
 		return self.Query( sql )
 
 
@@ -174,7 +180,7 @@ class Ai:
 
 	# 添加ep
 	def AddEp( self, *args ):
-		sql = "INSERT INTO `ep` ( `pid`, `epid`, `name_jp`, `name_cn` ) VALUES ( %s, %s, %s, %s ) "
+		sql = "INSERT INTO `ep` ( `eid`, `epid`, `name_jp`, `name_cn` ) VALUES ( %s, %s, %s, %s ) "
 		return self.Run( sql, args )
 
 	# 添加tag - 新TAG时写入LINK表
@@ -193,12 +199,19 @@ class Ai:
 		sql = "INSERT INTO `link` ( `tid`, `eid` ) VALUES ( %s, %s )"
 		return self.Run( sql, args )
 
-	# 获取TAG表
-	def GetRwTags( self ):
-		sql = "SELECT * FROM `_rw_tags_`"
-		return self.Query( sql )
 
+	# BILI部分
+	###
 
+	# 添加合集
+	def AddBiliCollection( self, *args ):
+		sql = "UPDATE `entry` SET `url1` = %s WHERE `id` = %s"
+		return self.Run( sql, args )
+
+	# 添加EP
+	def AddBiliEp( self, *args ):
+		sql = "UPDATE `ep` SET `url1` = %s, `bili_flag` = %s WHERE `eid` = %s AND `epid` = %s "
+		return self.Run( sql, args )
 
 
 class Tsukasa:

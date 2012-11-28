@@ -126,17 +126,23 @@ def FetchEpFromBangumi( start, end ):
 	for i in range( start, end ):
 		i = str(i)
 		# 取这条数据
-		entry = ai.GetEntryById( i )
-		if type(entry) != tuple :
+		try:
+			entry = ai.GetEntryById( i )
+		except:
+			Tsukasa.log( i + ' 条目不存在' )
+			continue
+
+		if type(entry) != dict :
 			Tsukasa.debug( i + ' 读取数据库时失败')
+			exit(1)
 
 		# 确定是动画条目
-		if entry[3] != CATE_BGM['anime'] or entry[8] == 1 :
+		if entry['cid'] != CATE_BGM['anime'] or entry['total'] == 1 :
 			Tsukasa.log( i + ' skip')
 			continue
 
 		# GO
-		r = FetchEpOfAnEntryFromBangumi( i, str(entry[4]) )
+		r = FetchEpOfAnEntryFromBangumi( i, str(entry['bgm']) )
 		if r != True:
 			Tsukasa.debug( i + ' ' + r )
 
@@ -179,5 +185,5 @@ def FetchEpOfAnEntryFromBangumi( id, bgmid ):
 
 
 
-FetchBangumi(45001,54001)
-#FetchEpFromBangumi(43567, 43566)
+#FetchBangumi(51998,54001)
+FetchEpFromBangumi(43567, 52477)
