@@ -72,7 +72,7 @@ def __AddBiliResource__( eid ):
 			# 主动放弃机制
 			if tried > 3 and (not found):
 				for epid_x in range( epid, ep_total + 1 ):
-					ai.AddBiliEp( -1, 0, eid, epid_x )
+					ai.AddBiliEp( -1, eid, epid_x )
 
 				# 记录放弃本动画，然后返回NOT FOUND
 				Tsukasa.log( str(eid) + ' abandoned' )
@@ -86,15 +86,14 @@ def __AddBiliResource__( eid ):
 			ai = Ai()
 
 			if not aid : 
-				ai.AddBiliEp( -1, 0, eid, epid )
+				ai.AddBiliEp( -1, eid, epid )
 				Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' not found' )
 				tried += 1
 				continue
 
 			# 找到了这话的资源
-			if NeedLogin( aid ) : need_login = 1
-			else : need_login = 0
-			ai.AddBiliEp(aid, need_login, eid, epid )
+			if NeedLogin( aid ) : aid = 'x' + str(aid)
+			ai.AddBiliEp(aid, eid, epid )
 			del ai
 
 			Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' success' )
@@ -107,7 +106,7 @@ def __AddBiliResource__( eid ):
 		ai = Ai()
 		ai.AddBiliCollection( av, eid )
 		for epid in range( 1, ep_total + 1 ):
-			ai.AddBiliEp( av + '/index_' + unicode(epid)  + '.html', 0, eid, epid )
+			ai.AddBiliEp( av + '/index_' + unicode(epid)  + '.html', eid, epid )
 		del ai
 
 		found = True
@@ -228,7 +227,3 @@ def LoginBilibili():
 		return True
 	else:
 		return '登录返回的状态有点奇怪，检查一下!'
-
-
-
-AddBiliResource( 45707, 52477 )

@@ -182,8 +182,3 @@ def FetchEpOfAnEntryFromBangumi( id, bgmid ):
 		epid += 1
 
 	return True
-
-
-
-#FetchBangumi(51998,54001)
-FetchEpFromBangumi(43567, 52477)

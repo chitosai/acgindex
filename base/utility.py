@@ -210,7 +210,7 @@ class Ai:
 
 	# 添加EP
 	def AddBiliEp( self, *args ):
-		sql = "UPDATE `ep` SET `url1` = %s, `bili_flag` = %s WHERE `eid` = %s AND `epid` = %s "
+		sql = "UPDATE `ep` SET `url1` = %s WHERE `eid` = %s AND `epid` = %s "
 		return self.Run( sql, args )
 
 
