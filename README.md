@@ -1,4 +1,4 @@
 acgindex
 ========
 
-source code of acgindex.us. i'm still working on it
+source code of the backend supporting system of acgindex.us. i'm still working on it

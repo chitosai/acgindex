@@ -148,7 +148,7 @@ class Ai:
 		except Exception, e:
 			# 1062是UNIQUE键重复，这是正常情况
 			if e[0] == 1062 : return ERROR_DK
-			Tsukasa.debug( e[0] + ' : ' + e[1] )
+			Tsukasa.debug( str(e[0]) + ' : ' + e[1] )
 			# 其他错误要捕获
 			return False # 返回False表示数据库出错
 
@@ -161,6 +161,13 @@ class Ai:
 		sql = "SELECT * FROM `entry` WHERE `id` = %s"
 		return self.Query( sql, id )[0]
 
+	# 根据bgmid取一个条目
+	def GetEntryByBgmId( self, bid ):
+		sql = "SELECT * FROM `entry` WHERE `bgm` = %s"
+		r = self.Query( sql, bid )
+		if len(r): return r[0]
+		else: return None
+
 	# 根据id取他的所有tag
 	def GetTagById( self, id ):
 		sql = "SELECT `name` FROM `tags` INNER JOIN `link` ON `link`.`tid` = `tags`.`tid` INNER JOIN `entry` ON `entry`.`id` = %s AND `entry`.`id` = `link`.`eid`"
@@ -171,7 +178,6 @@ class Ai:
 		global CATE_BGM
 		sql = "SELECT `id`,`name_cn` FROM `entry` WHERE `cid` = " + str(CATE_BGM[category_name])
 		return self.Query( sql )
-
 
 	# 添加entry
 	def AddEntry( self, *args ):
@@ -185,18 +191,29 @@ class Ai:
 
 	# 添加tag - 新TAG时写入LINK表
 	def AddTag( self, name, eid ):
+		global ERROR_DK
 		sql = "INSERT INTO `tags` ( `name` ) VALUES ( %s )"
 		tid = self.Run( sql, name )
-		
-		# tid=0表示TAG已存在，那么获取已存在的TAGID
-		if tid == 0 : 
-			tid = self.Query( "SELECT `tid` FROM `tags` WHERE `name` = %s", name)[0][0]
+
+		# Duplicated Key表示TAG已存在，那么获取已存在的TAGID
+		if tid == ERROR_DK : 
+			tid = self.Query( "SELECT `tid` FROM `tags` WHERE `name` = %s", name)[0]['tid']
 						
 		self.LinkTAGtoENTRY( tid, eid )
 
 	# 添加 TAG 与 ENTRY 的关联
 	def LinkTAGtoENTRY( self, *args ):
-		sql = "INSERT INTO `link` ( `tid`, `eid` ) VALUES ( %s, %s )"
+		sql = "SELECT COUNT(*) FROM `link` WHERE `tid` = %s AND `eid` = %s"
+		r = self.Query( sql, args )[0]['COUNT(*)']
+
+		# 当取到的行数为0时说明还没有添加过这个link
+		if not r:
+			sql = "INSERT INTO `link` ( `tid`, `eid` ) VALUES ( %s, %s )"
+			return self.Run( sql, args )
+
+	# 更新条目
+	def UpdateEntry( self, *args ):
+		sql = "UPDATE `entry` SET `name_cn` = %s, `name_jp` = %s, `total` = %s WHERE `bgm` = %s"
 		return self.Run( sql, args )
 
 

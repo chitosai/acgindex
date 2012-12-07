@@ -26,11 +26,12 @@ BILI_REGX = [
 # 接口
 def AddBiliResource( start, end ):
 	global ERROR_NF
-	# 准备Bili的cookie
 	end += 1
+	# 准备Bili的cookie
+	LoginBilibili();
 
 	for i in range( start, end ):
-		ret = __AddBiliResource__( i )
+		ret = doAddBiliResource( i )
 		if ret == ERROR_NF : 
 			Tsukasa.log( str(i) + ' dosent match anything')
 			time.sleep(3)
@@ -41,7 +42,7 @@ def AddBiliResource( start, end ):
 			Tsukasa.log( str(i) + ' skipped')
 
 # 为entry、ep添加bili资源
-def __AddBiliResource__( eid ):
+def doAddBiliResource( eid ):
 	global CATE_BGM, ERROR_NF, ERROR_NET
 	found = False
 
