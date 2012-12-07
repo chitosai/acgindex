@@ -131,6 +131,7 @@ def SearchBilibili( name, ep = None ):
 	# 解析json
 	ret = json.loads(c)
 	# 检查返回集是否为空
+	
 	try:
 		if not ret['total'] > 0 : return False
 	except:

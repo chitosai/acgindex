@@ -19,10 +19,12 @@ PATH_TMP     = '_tmp_\\'
 # 存储文件名
 FILE_COOKIE_BILI  = 'bilibili.txt'
 FILE_PROXY_LIST   = 'proxy.txt'
+FILE_ON_AIR_LIST  = 'on_air_list.txt'
 
 # 地址前缀
 URL_BILI					= 'http://www.bilibili.tv/video/av%s/'
 URL_BILI_SEARCH             = 'http://api.bilibili.tv/search?type=json&keyword=%s&page=1&order=default'
+URL_BILI_ON_AIR             = 'http://api.bilibili.tv/bangumi?type=json&btype=2&weekday=%s'
 URL_BGM						= 'http://bgm.tv/subject/'
 URL_RW						= 'http://d.52rwdm.com/view/%s.html'
 URL_KTXP					= 'http://bt.ktxp.com'

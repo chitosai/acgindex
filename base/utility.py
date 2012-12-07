@@ -113,7 +113,7 @@ class Ai:
 	def __init__(self, dbname = DB_NAME):
 		try:
 			self._ = MySQLdb.connect( DB_HOST, DB_USER, DB_PASS, dbname, charset="utf8" )
-			self.c  = self._.cursor( MySQLdb.cursors.DictCursor )
+			self.c  = self._.cursor( MySQLdb.cursors.DictCursor ) # 使fetchall的返回值为带key的字典形式
 		except:
 			Tsukasa.debug('数据库连接出错')
 			exit(1)
@@ -137,6 +137,7 @@ class Ai:
 
 			return self.c.fetchall()
 		except Exception, e:
+			Tsukasa.debug( str(e[0]) + ' : ' + e[1] )
 			return False # 返回False表示数据库出错
 
 
@@ -167,6 +168,35 @@ class Ai:
 		r = self.Query( sql, bid )
 		if len(r): return r[0]
 		else: return None
+
+	# 根据名字取条目
+	def GetEntryByName( self, name ):
+		name += '%'
+		# 先直接匹配entry.name_cn
+		sql = "SELECT * FROM `entry` WHERE `name_cn` LIKE %s"
+		r = self.Query( sql, name )
+		if len(r): return r
+
+		# 再匹配tags表
+		sql = "SELECT * FROM `entry`,`link`,`tags` WHERE `entry`.`id` = `link`.`eid` AND `link`.`tid` = `tags`.`tid` AND `tags`.`name` LIKE %s"
+		r = self.Query( sql, name )
+		if len(r): return r
+		else: return 0
+
+	# 根据名字取动画
+	def GetAnimeByName( self, name ):
+		global CATE_BGM
+		name += '%'
+		# 先直接匹配entry.name_cn
+		sql = "SELECT * FROM `entry` WHERE `name_cn` LIKE %s AND `cid` = %s"
+		r = self.Query( sql, ( name, CATE_BGM['anime'] ) )
+		if len(r): return r
+
+		# 再匹配tags表
+		sql = "SELECT `entry`.* FROM `entry`,`link`,`tags` WHERE `entry`.`id` = `link`.`eid` AND `entry`.`cid` = %s AND `link`.`tid` = `tags`.`tid` AND `tags`.`name` LIKE %s"
+		r = self.Query( sql, ( CATE_BGM['anime'], name ) )
+		if len(r): return r
+		else: return False
 
 	# 根据id取他的所有tag
 	def GetTagById( self, id ):
@@ -216,6 +246,13 @@ class Ai:
 		sql = "UPDATE `entry` SET `name_cn` = %s, `name_jp` = %s, `total` = %s WHERE `bgm` = %s"
 		return self.Run( sql, args )
 
+	# 更新ep
+	def UpdateEpBili( self, *args ):
+		sql = "UPDATE `ep` SET `url1` = %s WHERE `eid` = %s AND `epid` = %s"
+		return self.Run( sql, args )
+
+
+
 
 	# BILI部分
 	###
@@ -254,4 +291,4 @@ class Tsukasa:
 			f = open( PATH_LOG + time.strftime('%Y-%m-%d.log', time.localtime(time.time())), 'w+')
 		finally:
 			f.write( Tsukasa.GetTime() + message + '\n' )
-			f.close() 
+			f.close()
