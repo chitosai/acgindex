@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import platform
 
 # 版本信息
 ACGINDEX_VERSION = '0.1 Beta'
@@ -7,10 +8,16 @@ ACGINDEX_UA = ('User-agent', 'ACGINDEX/=w= ( im just a little spider; please don
 # DEBUG MODE
 DEBUG = False
 
+# 分隔符
+if platform.system() == 'Windows': SLASH = '\\'
+else: SLASH = '/'
+
 # 存储路径
-PATH_COVER   = 'cover\\'
-PATH_LOG     = 'log\\'
-PATH_TMP     = '_tmp_\\'
+PATH_COVER   = 'cover' + SLASH
+PATH_LOG     = 'log' + SLASH
+PATH_TMP     = '_tmp_' + SLASH
+
+print PATH_TMP
 
 # 存储文件名
 FILE_COOKIE_BILI  = 'bilibili.txt'
