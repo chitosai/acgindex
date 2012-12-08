@@ -7,10 +7,6 @@ ACGINDEX_UA = ('User-agent', 'ACGINDEX/=w= ( im just a little spider; please don
 # DEBUG MODE
 DEBUG = False
 
-# 数据库配置
-DB_HOST = '127.0.0.1'
-DB_NAME = 'acgindex'
-
 # 存储路径
 PATH_COVER   = 'cover\\'
 PATH_LOG     = 'log\\'

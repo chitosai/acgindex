@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime, time, json, urllib
+import datetime, time, json, urllib, sys
 
 from fetchBilibili import *
 from fetchBangumi import *
@@ -105,7 +105,7 @@ def UpdateBangumi():
 				Tsukasa.debug( 'Error Updating info of ' + str(bid) + ' ' + r)
 				continue
 
-			Tsukasa.log('%s ep.%s SUCCEED' % (name.encode('gbk'), epid))
+			Tsukasa.debug('%s ep.%s SUCCEED' % (name.encode('utf-8'), epid))
 
 	# 用新列表替换旧列表
 	on_air_list = _on_air_list
@@ -115,5 +115,13 @@ def UpdateBangumi():
 	f.close()
 
 
-AppendOnAirBangumi()
-UpdateBangumi()
+# 被直接执行时...
+if __name__ == '__main__':
+	if len(sys.argv) > 1:
+		param = sys.argv[1]
+
+		if param == 'update' : UpdateBangumi()
+		elif param == 'append' : AppendOnAirBangumi()
+
+	# 没有传入参数
+	else : Tsukasa.debug('No param specified')
