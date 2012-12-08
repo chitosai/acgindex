@@ -19,6 +19,7 @@ def AppendOnAirBangumi():
 
 	# 获取今天星期几，1 = 周一 ...
 	d = datetime.datetime.now().weekday() + 1
+	if d == 7: d = 0 # bili的周末是0
 	
 	# 获取今天的番组列表
 	c = Haruka.Get( URL_BILI_ON_AIR % d )
@@ -32,6 +33,10 @@ def AppendOnAirBangumi():
 	r = r['list']
 	ai = Ai()
 	for each in r:
+		# 周末时会出现许多不是当天更新的番组也被列在json中
+		# 所以只好用个麻烦的方法筛除掉了
+		if r[each]['weekday'] != d : continue
+
 		entry = ai.GetAnimeByName(r[each]['title'])
 		if not entry : continue
 		if entry[0]['id'] not in on_air_list:
