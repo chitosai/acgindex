@@ -17,8 +17,6 @@ PATH_COVER   = 'cover' + SLASH
 PATH_LOG     = 'log' + SLASH
 PATH_TMP     = '_tmp_' + SLASH
 
-print PATH_TMP
-
 # 存储文件名
 FILE_COOKIE_BILI  = 'bilibili.txt'
 FILE_PROXY_LIST   = 'proxy.txt'
