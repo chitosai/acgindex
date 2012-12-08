@@ -67,8 +67,9 @@ def doAddBiliResource( eid ):
 		ai = Ai()
 		ai.AddBiliCollection( -1, eid )
 		del ai
+		Tsukasa.log( str(eid) + ' 没有找到合集')
 		# 再单独搜索每一话的资源
-		tried = 0 # 留一个迭代变量，如果前三次匹配都没有找到资源就跳过这整部动画，节约时间
+		tried = 0 # 留一个标识变量，如果前三次匹配都没有找到资源就跳过这整部动画，节约时间
 		for epid in range( 1, ep_total + 1):
 			# 主动放弃机制
 			if tried > 3 and (not found):
@@ -82,7 +83,9 @@ def doAddBiliResource( eid ):
 			# 然后开始匹配
 			time.sleep(3)
 			aid = SearchBilibili( name, epid )
-			if aid == ERROR_NET : exit(1)
+			if aid == ERROR_NET : 
+				Tsukasa.debug( ERROR_NET )
+				exit(1)
 
 			ai = Ai()
 
@@ -130,8 +133,8 @@ def SearchBilibili( name, ep = None ):
 
 	# 解析json
 	ret = json.loads(c)
-	# 检查返回集是否为空
 	
+	# 检查返回集是否为空
 	try:
 		if not ret['total'] > 0 : return False
 	except:

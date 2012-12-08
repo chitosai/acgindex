@@ -216,8 +216,18 @@ class Ai:
 
 	# 添加ep
 	def AddEp( self, *args ):
-		sql = "INSERT INTO `ep` ( `eid`, `epid`, `name_jp`, `name_cn` ) VALUES ( %s, %s, %s, %s ) "
-		return self.Run( sql, args )
+		# 先检查此ep是否已存在
+		sql = "SELECT COUNT(*) FROM `ep` WHERE `eid` = %s AND `epid` = %s"
+		r = self.Query( sql, ( args[0], args[1] ) )[0]['COUNT(*)']
+
+		# 没有这个条目的话就新插入
+		if not r :
+			sql = "INSERT INTO `ep` ( `eid`, `epid`, `name_jp`, `name_cn` ) VALUES ( %s, %s, %s, %s ) "
+			return self.Run( sql, args )
+		# 否则就更新
+		else:
+			sql = "UPDATE `ep` SET `name_jp` = %s, `name_cn` = %s WHERE `eid` = %s AND `epid` = %s"
+			return self.Run( sql, (args[2], args[3], args[0], args[1]) )
 
 	# 添加tag - 新TAG时写入LINK表
 	def AddTag( self, name, eid ):
@@ -243,7 +253,7 @@ class Ai:
 
 	# 更新条目
 	def UpdateEntry( self, *args ):
-		sql = "UPDATE `entry` SET `name_cn` = %s, `name_jp` = %s, `total` = %s WHERE `bgm` = %s"
+		sql = "UPDATE `entry` SET `total` = %s WHERE `bgm` = %s"
 		return self.Run( sql, args )
 
 	# 更新ep

@@ -5,6 +5,7 @@ from fetchBilibili import *
 
 # 重新抓取某个特定的bgm条目
 # 重新抓取时如果是动画条目会直接把ep也抓取出来
+# 这个ep资源是强制单独抓每一话的，不会抓合集！
 def updateEntry( bid ):
 	# 检查条目是否存在
 	ai = Ai()
@@ -28,24 +29,9 @@ def updateEntry( bid ):
 	if '数据库中没有查询您所指定的条目' in c :
 		return False
 
-	# 查找中文名
-	m = re.search( re_name_cn, c )
-	if m :
-		name_cn = m.group(1)
-	else:
-		name_cn = None
-	
-	# 查找h1
-	m = re.search( re_h1, c )
-	if m :
-		bgm = int(m.group(1))
-		name_jp = m.group(2)
-	else:
-		return '无法获取h1'
-
-	# 没有中文名时说明本身就是中文作品
-	if not name_cn:
-		name_cn = name_jp
+	#
+	# 这里不重新抓取中文、日文名是怕如果人工修改过那两个字段，重新自动抓取就白改了
+	#
 
 	# 动画作品要获取总话数及每话信息
 	total = -1
@@ -63,7 +49,7 @@ def updateEntry( bid ):
 
 	# 更新entry表数据
 	ai = Ai()
-	r = ai.UpdateEntry(name_cn, name_jp, total, bid)
+	r = ai.UpdateEntry( total, bid )
 	if type(r) == bool and not r : return '写入数据库出错'
 
 	# 获取TAGS
@@ -80,4 +66,5 @@ def updateEntry( bid ):
 	# 成功获取返回True
 	return True
 
-print updateEntry(29648)
+
+print updateEntry(43558)

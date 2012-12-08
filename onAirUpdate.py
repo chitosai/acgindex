@@ -35,7 +35,10 @@ def AppendOnAirBangumi():
 		entry = ai.GetAnimeByName(r[each]['title'])
 		if not entry : continue
 		if entry[0]['id'] not in on_air_list:
-			on_air_list[entry[0]['id']] = r[each]['bgmcount']
+			on_air_list[entry[0]['id']] = {
+				'lastupdate': r[each]['lastupdate'],
+				'ep'        : r[each]['bgmcount']
+			}
 
 	del ai
 
@@ -61,36 +64,48 @@ def UpdateBangumi():
 		return False
 
 	# 更新番组
+	ct = time.time()
 	_on_air_list = {}
 	for each in on_air_list:
-		# 取中文名
+		# 取bgmid
 		ai = Ai()
 		entry = ai.GetEntryById(each)
 		name = entry['name_cn']
 		bid = entry['bgm']
 		del ai
 
+		entry = on_air_list[each]
+		epid = entry['ep']
+
 		# 先等待3秒好了..省得...
 		time.sleep(3)
 
-		# 搜bili
-		r = SearchBilibili( name.encode('utf-8'), on_air_list[each] )
-		print name, r
-		if not r: 
-			_on_air_list[each] = on_air_list[each]
+		# 根据lastupdate时间来判断是否是最新话
+		if ct - entry['lastupdate'] > 86400: 
+			# 86400秒 = 24小时，最后更新时间距离现在超过24小时说明不是最新一话
+			Tsukasa.log( '%s ep.%s not updated yet' % (name.encode('gbk'), (epid + 1)))
+			_on_air_list[each] = entry
 			continue
+		else:
+			# 搜bili
+			r = SearchBilibili( name.encode('utf-8'), epid )
+			if not r: 
+				Tsukasa.debug( 'Error fetching ' + name.encode('utf-8') + ' ep.' + str(epid) )
+				continue
 
-		# 找到了的话，就插入数据库
-		ai = Ai()
-		ai.UpdateEpBili( r, each, on_air_list[each] )
-		del ai
+			# 找到了的话，就插入数据库
+			ai = Ai()
+			ai.UpdateEpBili( r, each, epid )
+			del ai
 
-		# 并且更新一下ep信息，一般来说bangumi应该会比bili早更新的
-		r = FetchEpOfAnEntryFromBangumi( each, str(bid) )
-		if r != True:
-			_on_air_list[each] = on_air_list[each]
-			Tsukasa.debug( i + ' ' + r )
-			continue
+			# 并且更新一下ep信息，一般来说bangumi应该会比bili早更新的
+			r = FetchEpOfAnEntryFromBangumi( each, str(bid) )
+			if r != True:
+				_on_air_list[each] = entry
+				Tsukasa.debug( 'Error Updating info of ' + str(bid) + ' ' + r)
+				continue
+
+			Tsukasa.log('%s ep.%s SUCCEED' % (name.encode('gbk'), epid))
 
 	# 用新列表替换旧列表
 	on_air_list = _on_air_list
@@ -100,5 +115,5 @@ def UpdateBangumi():
 	f.close()
 
 
-#AppendOnAirBangumi()
+AppendOnAirBangumi()
 UpdateBangumi()
