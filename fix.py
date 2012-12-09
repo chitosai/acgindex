@@ -43,8 +43,9 @@ def updateEntry( bid ):
 			total = 1 # 没有总话数一般是剧场版之类的，认为只有1话就是了
 
 		# 获取每话信息
-		if FetchEpOfAnEntryFromBangumi( eid, str(bid) ) != True:
-			Tsukasa.debug( i + ' ' + r )
+		r = FetchEpOfAnEntryFromBangumi( eid, str(bid) )
+		if r!= True:
+			Tsukasa.debug( '%s ep.%s %s' % (eid, bid, r) )
 			return '获取每话信息出错'
 
 	# 更新entry表数据

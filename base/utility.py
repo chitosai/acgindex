@@ -198,6 +198,16 @@ class Ai:
 		if len(r): return r
 		else: return False
 
+
+	# 获取EP数据
+	def GetEp( self, *args ):
+		sql = "SELECT * FROM `ep` WHERE `eid` = %s AND `epid` = %s"
+		r = self.Query( sql, args )
+		if len(r) : return r[0]
+		else: return False
+
+
+
 	# 根据id取他的所有tag
 	def GetTagById( self, id ):
 		sql = "SELECT `name` FROM `tags` INNER JOIN `link` ON `link`.`tid` = `tags`.`tid` INNER JOIN `entry` ON `entry`.`id` = %s AND `entry`.`id` = `link`.`eid`"
