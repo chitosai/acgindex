@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import platform
+import platform, os
 
 # 版本信息
 ACGINDEX_VERSION = '0.1 Beta'
@@ -12,10 +12,13 @@ DEBUG = False
 if platform.system() == 'Windows': SLASH = '\\'
 else: SLASH = '/'
 
+# ABS_PATH
+ABS_PATH = os.getcwd() + SLASH
+
 # 存储路径
-PATH_COVER   = 'cover' + SLASH
-PATH_LOG     = 'log' + SLASH
-PATH_TMP     = '_tmp_' + SLASH
+PATH_COVER   = ABS_PATH + 'cover' + SLASH
+PATH_LOG     = ABS_PATH + 'log' + SLASH
+PATH_TMP     = ABS_PATH + '_tmp_' + SLASH
 
 # 存储文件名
 FILE_COOKIE_BILI  = 'bilibili.txt'

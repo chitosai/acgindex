@@ -61,10 +61,7 @@ def updateEntry( bid ):
 	del ai
 
 	# 最后更新资源
-	doAddBiliResource( eid )
+	doAddBiliResource( eid, True )
 
 	# 成功获取返回True
 	return True
-
-
-print updateEntry(43558)

@@ -42,7 +42,7 @@ def AddBiliResource( start, end ):
 			Tsukasa.log( str(i) + ' skipped')
 
 # 为entry、ep添加bili资源
-def doAddBiliResource( eid ):
+def doAddBiliResource( eid, forceEP = False ):
 	global CATE_BGM, ERROR_NF, ERROR_NET
 	found = False
 
@@ -62,7 +62,7 @@ def doAddBiliResource( eid ):
 	av = SearchBilibili( name )
 	if type(av) != bool and av.encode('utf-8') == ERROR_NET : exit(1)
 	# 没有找到合集的情况下
-	if not av :
+	if not av or forceEP:
 		# 写入“没有合集” -1
 		ai = Ai()
 		ai.AddBiliCollection( -1, eid )
