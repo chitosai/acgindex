@@ -1,8 +1,11 @@
 /cover/
 /log/
+/_tmp_/
 
 /base/*.pyc
 /base/accounts.py
+
+/sql/DATA_*.sql
 
 /*.pyc
 /_execute_.py

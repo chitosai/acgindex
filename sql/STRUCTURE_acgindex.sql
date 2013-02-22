@@ -33,7 +33,7 @@ CREATE TABLE `entry` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `bgm` (`bgm`),
   KEY `name_cn` (`name_cn`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52478 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -78,4 +78,4 @@ CREATE TABLE `tags` (
   `tid` int(11) NOT NULL auto_increment COMMENT 'TAG_ID',
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10936 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
