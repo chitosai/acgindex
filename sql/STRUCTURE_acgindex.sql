@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 2.10.3
+-- version 2.10.2
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2012 年 11 月 28 日 16:34
--- 服务器版本: 5.0.51
--- PHP 版本: 5.2.6
+-- 生成日期: 2013 年 03 月 12 日 15:29
+-- 服务器版本: 5.0.45
+-- PHP 版本: 5.2.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -33,7 +33,7 @@ CREATE TABLE `entry` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `bgm` (`bgm`),
   KEY `name_cn` (`name_cn`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=63311 ;
 
 -- --------------------------------------------------------
 
@@ -69,6 +69,20 @@ CREATE TABLE `link` (
 -- --------------------------------------------------------
 
 -- 
+-- 表的结构 `names`
+-- 
+
+DROP TABLE IF EXISTS `names`;
+CREATE TABLE `names` (
+  `type` tinyint(4) NOT NULL COMMENT '注明是哪个源的别名',
+  `eid` int(11) NOT NULL COMMENT 'entry id',
+  `name` varchar(36) NOT NULL COMMENT '别名',
+  KEY `eid` (`eid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+-- 
 -- 表的结构 `tags`
 -- 
 
@@ -78,4 +92,4 @@ CREATE TABLE `tags` (
   `tid` int(11) NOT NULL auto_increment COMMENT 'TAG_ID',
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12480 ;

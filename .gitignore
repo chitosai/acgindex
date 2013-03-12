@@ -1,6 +1,5 @@
 /cover/
 /log/
-/_tmp_/
 
 /base/*.pyc
 /base/accounts.py
