@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import platform, os
+import platform, os, sys
 
 # 版本信息
 ACGINDEX_VERSION = '0.1 Beta'
@@ -13,7 +13,7 @@ if platform.system() == 'Windows': SLASH = '\\'
 else: SLASH = '/'
 
 # ABS_PATH
-ABS_PATH = os.getcwd() + SLASH
+ABS_PATH = sys.path[0] + SLASH
 
 # 存储路径
 PATH_COVER   = ABS_PATH + 'cover' + SLASH

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import urllib, urllib2, cookielib, gzip
+import urllib2
 import MySQLdb
 import time
 import socket
-import sys
+
+from StringIO import StringIO
+from gzip import GzipFile
+from urllib import urlretrieve
+from cookielib import MozillaCookieJar
 
 from config import *
 from accounts import *
-from StringIO import StringIO
 
 # 设置网络超时时间
 socket.setdefaulttimeout(15) 
@@ -45,7 +48,7 @@ class Haruka:
 		global PATH_TMP, ACGINDEX_UA
 
 		try:
-			cj = cookielib.MozillaCookieJar( PATH_TMP + cookie_name )
+			cj = MozillaCookieJar( PATH_TMP + cookie_name )
 
 			try :
 				cj.load( PATH_TMP + cookie_name )
@@ -80,7 +83,7 @@ class Haruka:
 	def GetImage( eid, cid, url, retry = 3 ):
 		global PATH_COVER
 		try:
-			urllib.urlretrieve( url, PATH_COVER + str(eid) + '_' + str(cid) + '.jpg')
+			urlretrieve( url, PATH_COVER + str(eid) + '_' + str(cid) + '.jpg')
 			return True
 		except:
 			if retry > 0 :
@@ -96,7 +99,7 @@ class Haruka:
 		# 检查是否被GZIP
 		if res.info().get('Content-Encoding') == 'gzip':
 		    buf = StringIO( res.read() )
-		    f = gzip.GzipFile( fileobj=buf )
+		    f = GzipFile( fileobj=buf )
 		    data = f.read()
 		else:
 			data = res.read()
