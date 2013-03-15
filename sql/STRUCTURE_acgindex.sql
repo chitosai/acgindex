@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2013 年 03 月 14 日 15:38
+-- 生成日期: 2013 年 03 月 15 日 13:51
 -- 服务器版本: 5.0.45
 -- PHP 版本: 5.2.3
 
@@ -33,7 +33,7 @@ CREATE TABLE `entry` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `bgm` (`bgm`),
   KEY `name_cn` (`name_cn`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=65275 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -93,4 +93,4 @@ CREATE TABLE `tags` (
   `tid` int(11) NOT NULL auto_increment COMMENT 'TAG_ID',
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12823 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
