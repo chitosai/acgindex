@@ -6,10 +6,11 @@ from fetchBangumi import *
 from fix import *
 
 #
-# 每天获取一次今日更新番组列表
+# 检查bili的番组表
+# 如果出现提示，说明bili番组表里记录的动画标题和entry表中的不符合，需要到bili_name中手工增加关联
 #
-def CheckOnAirList():
-	global ERROR_NET, URL_BILI_ON_AIR
+def UpdateBiliAirList():
+	global ERROR_NET, URL_BILI_ON_AIR, NAMES_SOURCES
 
 	# 获取周日的列表，这样可以拿到所有番组
 	c = Haruka.Get( URL_BILI_ON_AIR )
@@ -32,10 +33,15 @@ def CheckOnAirList():
 
 		# 先核对本地数据库是否有相应条目
 		ai = Ai()
-		local_entry = ai.GetAnimeByName(remote_name)
+		# 先从names表里找，这里也存着-1等特殊状态
+		local_entry = ai.GetAnimeByAlterName( 'bili', remote_name )
+		# 如果在names表里没有找到，那么到entry表里取
+		if not local_entry : local_entry = ai.GetAnimeByName(remote_name)
+		# 如果取到name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
+		elif local_entry[0]['name_cn'] == '-1' : continue
 
 		if not local_entry:
-			Tsukasa.debug('%s NOT FOUND IN DATABASE !!!' % remote_name.encode('utf-8'))
+			Tsukasa.debug('%s - ENTRY NOT FOUND !!!' % remote_name.encode('utf-8'))
 			continue
 		else:
 			local_entry = local_entry[0]
@@ -43,15 +49,17 @@ def CheckOnAirList():
 		local_id = local_entry['id']
 		local_bid = local_entry['bgm']
 		local_name = local_entry['name_cn']
+
 		# 最后获取最新一话的前一话的ep
 		local_ep = ai.GetEp( local_id, remote_epid )
 
 		del ai
 
-		# 如果条目不存在，那目测是出问题了需要重抓的..
+		# 如果条目不存在，那目测是出问题了需要重抓的.. 
+		# 比如之前爬到这个条目时bangumi上还没有“话数”、“章节”等数据，现在重抓一次可以获得最新数据
 		if not local_ep:
-			Tsukasa.debug('EP DATA OF %s : %s NOT EXISTS !!!' % (local_id, local_name.encode('utf-8')))
-			updateEntry(local_bid)
+			Tsukasa.debug('%s : %s - EP DATA NOT FOUND' % (local_id, remote_name.encode('utf-8')))
+			UpdateEntry(local_bid)
 
 
 
@@ -91,9 +99,12 @@ def UpdateBili():
 		else:
 			# 从本地数据库取数据
 			ai = Ai()
-			local_entry = ai.GetAnimeByName(remote_name)
-
-			print remote_name
+			# 先从names表里找，这里也存着-1等特殊状态
+			local_entry = ai.GetAnimeByAlterName( 'bili', remote_name )
+			# 如果在names表里没有找到，那么到entry表里取
+			if not local_entry : local_entry = ai.GetAnimeByName(remote_name)
+			# 如果取到name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
+			elif local_entry[0]['name_cn'] == '-1' : continue
 
 			# 这个情况应该是在一个季度刚开始连载时，需要人工校对bangumi条目名称和Bili资源名称时的提示
 			# 如果在连载中出现这个提示应该是出问题了吧
@@ -103,10 +114,14 @@ def UpdateBili():
 			else:
 				local_entry = local_entry[0]
 
+			# 如果name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
+			if local_entry['name_cn'] == '-1' : continue
+
 			local_id = local_entry['id']
 			local_name = local_entry['name_cn']
 			local_bid = local_entry['bgm']
 			local_ep = ai.GetEp( local_id, remote_epid )
+			
 			del ai
 
 			# 如果这样目测是之前的ep都没抓到了..
@@ -115,7 +130,7 @@ def UpdateBili():
 				continue
 
 			# 对照一下最新话，看看本地数据是否已经是最新的
-			if (local_ep['url1'] != u'-1') or (local_ep['url1'] != u''): continue
+			if (local_ep['bili'] != u'-1') and (local_ep['bili'] != u''): continue
 
 			# 到这里就是待更新的番组了
 			# 先等待3秒好了..省得...
@@ -123,7 +138,8 @@ def UpdateBili():
 			# 搜bili
 			r = SearchBilibili( local_name.encode('utf-8'), remote_epid )
 			if not r: 
-				Tsukasa.debug( 'Error fetching ' + local_name.encode('utf-8') + ' ep.' + str(remote_epid) )
+				Tsukasa.debug( str(local_id) + ' : ' + local_name.encode('utf-8') + \
+								' ep.' + str(remote_epid) + ' {BILI} not released yet' )
 				continue
 
 			# 找到了的话，就插入数据库
@@ -133,9 +149,12 @@ def UpdateBili():
 
 			# 并且更新一下ep信息，一般来说bangumi应该会比bili早更新的
 			r = FetchEpOfAnEntryFromBangumi( local_id, str(local_bid) )
-			if r != True:
-				Tsukasa.debug( 'Error Updating info of ' + str(local_bid) + ' ' + r)
-				continue
+			# 本来是觉得既然是新番，应该不会没人更新每话标题吧
+			# 结果就真没有！{漫画少女}
+			# 所以拉倒了，bili更新的时候bangumi还没人更新的话，就这样算了吧
+			# if r != True:
+			# 	Tsukasa.debug( str(local_id) + ' : ' + str(local_bid) + ' ' + r + ' {bangumi} ep info not updated yet')
+			# 	continue
 
 			# 运行到这里就是更新完毕啦
 			Tsukasa.debug('%s ep.%s update succeed' % (local_name.encode('utf-8'), remote_epid))
@@ -146,8 +165,15 @@ if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		param = sys.argv[1]
 
-		if param == 'update' : UpdateBili()
-		elif param == 'check' : CheckOnAirList()
+		if param == 'update_bili':
+			Tsukasa.debug('update bili resources\n========================================================')
+			UpdateBili()
+			Tsukasa.debug('END\n')
+
+		elif param == 'check_bili': 
+			Tsukasa.debug('\nupdate bili on-air list\n========================================================')
+			UpdateBiliAirList()
+			Tsukasa.debug('process end\n')
 
 	# 没有传入参数
 	else : Tsukasa.debug('No param specified')

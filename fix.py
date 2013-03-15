@@ -6,7 +6,7 @@ from fetchBilibili import *
 # 重新抓取某个特定的bgm条目
 # 重新抓取时如果是动画条目会直接把ep也抓取出来
 # 这个ep资源是强制单独抓每一话的，不会抓合集！
-def updateEntry( bid ):
+def UpdateEntry( bid ):
 	# 检查条目是否存在
 	ai = Ai()
 	r = ai.GetEntryByBgmId( bid )
@@ -40,7 +40,7 @@ def updateEntry( bid ):
 		if m:
 			total = m.group(1)
 		else:
-			total = 1 # 没有总话数一般是剧场版之类的，认为只有1话就是了
+			total = 100 # 一般需要重抓数据的应该都是新番吧，新番抓不到总话数的一般是年番之类的长篇，就当做100话来处理好了
 
 		# 获取每话信息
 		r = FetchEpOfAnEntryFromBangumi( eid, str(bid) )
@@ -48,9 +48,9 @@ def updateEntry( bid ):
 			Tsukasa.debug( '%s ep.%s %s' % (eid, bid, r) )
 			return '获取每话信息出错'
 
-	# 更新entry表数据
+	# 更新entry表的ep数据
 	ai = Ai()
-	r = ai.UpdateEntry( total, bid )
+	r = ai.UpdateTotalEpOfAnEntry( total, bid )
 	if type(r) == bool and not r : return '写入数据库出错'
 
 	# 获取TAGS
@@ -65,4 +65,25 @@ def updateEntry( bid ):
 	doAddBiliResource( eid, True )
 
 	# 成功获取返回True
+	return True
+
+
+
+# 手动为条目绑定别名，并抓取该条目在bangumi的最新数据
+def UpdateEntryWithAlterName( bgmid, source, index_name, real_name ):
+	ai = Ai()
+	r = ai.AddAlterNameToBgmid( bgmid, source, index_name, real_name )
+	del ai
+
+	if type(r) == bool and not r :
+		Tsukasa.debug('error add alter name for ' + bgmid + ' : ' + index_name)
+		return False
+
+	# 如果real_name是-1说明这番有问题，那就不去更新了
+	if real_name == '-1' or real_name == -1:
+		return True
+
+	# 否则就更新条目信息
+	UpdateEntry(bgmid)
+
 	return True

@@ -3,7 +3,7 @@ import platform, os
 
 # 版本信息
 ACGINDEX_VERSION = '0.1 Beta'
-ACGINDEX_UA = ('User-agent', 'ACGINDEX/=w= ( im just a little spider; please dont block me;)' )
+ACGINDEX_UA = ('User-agent', 'ACGINDEX ' + ACGINDEX_VERSION + ' /=w= ( im just a little spider; please let me in; )' )
 
 # DEBUG MODE
 DEBUG = False
@@ -44,7 +44,11 @@ CATE_BGM = {
 	'real'	: 6
 }
 
+NAMES_SOURCES = {
+	'bili'  : 0
+}
+
 # 一些通用的出错提示
-ERROR_NET  = '网络出错，无法获取 ----------------------------------------------------[ ERROR ] '
+ERROR_NET  = '网络出错，无法获取'
 ERROR_DK   = 'Duplicated Key'
 ERROR_NF   = 'NOT FOUND'

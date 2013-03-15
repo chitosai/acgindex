@@ -49,6 +49,11 @@ def doAddBiliResource( eid, forceEP = False ):
 	# 读取entry信息
 	ai = Ai()
 	entry = ai.GetEntryById( eid )
+
+	# 检查是否有bili别名
+	bili_name = ai.GetAlterNameById( eid, 'bili' )
+	if bili_name : entry['name_cn'] = bili_name
+
 	del ai
 
 	name = entry['name_cn'].encode('utf-8')

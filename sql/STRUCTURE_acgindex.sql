@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2013 年 03 月 12 日 15:29
+-- 生成日期: 2013 年 03 月 14 日 15:38
 -- 服务器版本: 5.0.45
 -- PHP 版本: 5.2.3
 
@@ -26,14 +26,14 @@ CREATE TABLE `entry` (
   `name_jp` varchar(255) NOT NULL COMMENT '日文名',
   `cid` tinyint(4) NOT NULL COMMENT '所属分类',
   `bgm` int(11) NOT NULL,
-  `url1` varchar(255) NOT NULL default '',
+  `bili` varchar(255) NOT NULL,
   `url2` varchar(255) NOT NULL default '',
   `url3` varchar(255) NOT NULL default '',
   `total` int(11) NOT NULL COMMENT '总话数',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `bgm` (`bgm`),
   KEY `name_cn` (`name_cn`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=63311 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=65275 ;
 
 -- --------------------------------------------------------
 
@@ -47,7 +47,7 @@ CREATE TABLE `ep` (
   `epid` int(11) NOT NULL COMMENT '第几话',
   `name_cn` varchar(255) NOT NULL COMMENT '这话的中文名',
   `name_jp` varchar(255) NOT NULL COMMENT '日文名',
-  `url1` varchar(255) NOT NULL default '',
+  `bili` varchar(255) NOT NULL,
   `url2` varchar(255) NOT NULL default '',
   `url3` varchar(255) NOT NULL default '',
   KEY `pid` (`eid`,`epid`)
@@ -74,10 +74,11 @@ CREATE TABLE `link` (
 
 DROP TABLE IF EXISTS `names`;
 CREATE TABLE `names` (
-  `type` tinyint(4) NOT NULL COMMENT '注明是哪个源的别名',
+  `source` tinyint(4) NOT NULL COMMENT '来源站',
   `eid` int(11) NOT NULL COMMENT 'entry id',
-  `name` varchar(36) NOT NULL COMMENT '别名',
-  KEY `eid` (`eid`)
+  `index_name` varchar(36) NOT NULL COMMENT 'bili新番列表收录的名字',
+  `real_name` varchar(36) NOT NULL COMMENT 'up主实际上传时用的名字',
+  PRIMARY KEY  (`index_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -92,4 +93,4 @@ CREATE TABLE `tags` (
   `tid` int(11) NOT NULL auto_increment COMMENT 'TAG_ID',
   PRIMARY KEY  (`tid`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12480 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12823 ;

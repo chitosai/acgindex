@@ -106,7 +106,7 @@ def FetchSubjectFromBangumi( id ):
 		if m:
 			if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
 		else:
-			return '没有封面'
+			return True # 这个条目没有封面，没有就没有咯，没啥值得记录的所以还是返回True吧
 
 	# 成功获取返回True
 	return True

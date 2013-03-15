@@ -4,10 +4,10 @@ import urllib, urllib2, cookielib, gzip
 import MySQLdb
 import time
 import socket
+import sys
 
 from config import *
 from accounts import *
-from sys import stderr
 from StringIO import StringIO
 
 # 设置网络超时时间
@@ -183,6 +183,9 @@ class Ai:
 		if len(r): return r
 		else: return 0
 
+
+
+
 	# 根据名字取动画
 	def GetAnimeByName( self, name ):
 		global CATE_BGM
@@ -198,6 +201,47 @@ class Ai:
 		if len(r): return r
 		else: return False
 
+	# 取动画的bili别名
+	def GetAnimeByAlterName( self, source, index_name ):
+		global NAMES_SOURCES
+		# 准备SQL
+		sql = "SELECT * FROM `names` WHERE `source` = %s AND `index_name` = %s"
+		r = self.Query( sql, (NAMES_SOURCES[source], index_name) )
+
+		# 如果没有存别名，那就返回
+		if not len(r): return False
+		else: r = r[0]
+
+		# 如果存了别名，就从entry表中取出相应的条目，把name_cn替换成bili使用的real_name，然后返回
+		entry = self.GetEntryById( r['eid'] )
+
+		if r['real_name'] == '':
+			entry['name_cn'] = r['index_name']
+		else:
+			entry['name_cn'] = r['real_name']
+
+		return (entry,)
+
+
+
+
+	# 检查某个entry是否有别名
+	def GetAlterNameById( self, eid, source ):
+		global NAMES_SOURCES
+		# 准备SQL
+		sql = "SELECT * FROM `names` WHERE `source` = %s AND `eid` = %s"
+		r = self.Query( sql, ( NAMES_SOURCES[source], eid) )
+
+		# 返回值
+		if len(r): 
+			r = r[0]
+			if r['real_name'] != '' : return r['real_name']
+			else : return r['index_name']
+		else:
+			return False
+
+
+
 
 	# 获取EP数据
 	def GetEp( self, *args ):
@@ -208,16 +252,29 @@ class Ai:
 
 
 
+
+
 	# 根据id取他的所有tag
 	def GetTagById( self, id ):
 		sql = "SELECT `name` FROM `tags` INNER JOIN `link` ON `link`.`tid` = `tags`.`tid` INNER JOIN `entry` ON `entry`.`id` = %s AND `entry`.`id` = `link`.`eid`"
 		return self.Query( sql, id )
+
+
+
+
 
 	# 按分类获取
 	def GetEntryByCategory( self, category_name ):
 		global CATE_BGM
 		sql = "SELECT `id`,`name_cn` FROM `entry` WHERE `cid` = " + str(CATE_BGM[category_name])
 		return self.Query( sql )
+
+
+
+	### 
+	### 插入
+	###
+
 
 	# 添加entry
 	def AddEntry( self, *args ):
@@ -261,14 +318,41 @@ class Ai:
 			sql = "INSERT INTO `link` ( `tid`, `eid` ) VALUES ( %s, %s )"
 			return self.Run( sql, args )
 
+	# 为条目添加别名
+	def AddAlterNameToBgmid( self, bgmid, source, index_name, real_name = '' ):
+		global NAMES_SOURCES
+		# 先取entry id
+		sql = "SELECT `id` FROM `entry` WHERE `bgm` = %s"
+		eid = self.Query( sql, bgmid )
+
+		# 也许会超过目前抓到的最大bgmid？
+		if not len(eid) : return -1
+		else : eid = eid[0]['id']
+
+		# 处理数据
+		source_id = NAMES_SOURCES[source]
+
+		# 插入别名
+		sql = "INSERT INTO `names` ( `eid`, `source`, `index_name`, `real_name` ) VALUES ( %s, %s, %s, %s )"
+		return self.Run( sql, ( eid, source_id, index_name, real_name ))
+
+
+
+
+	###
+	### 更新
+	###
+
+
+
 	# 更新条目
-	def UpdateEntry( self, *args ):
+	def UpdateTotalEpOfAnEntry( self, *args ):
 		sql = "UPDATE `entry` SET `total` = %s WHERE `bgm` = %s"
 		return self.Run( sql, args )
 
 	# 更新ep
 	def UpdateEpBili( self, *args ):
-		sql = "UPDATE `ep` SET `url1` = %s WHERE `eid` = %s AND `epid` = %s"
+		sql = "UPDATE `ep` SET `bili` = %s WHERE `eid` = %s AND `epid` = %s"
 		return self.Run( sql, args )
 
 
@@ -279,12 +363,12 @@ class Ai:
 
 	# 添加合集
 	def AddBiliCollection( self, *args ):
-		sql = "UPDATE `entry` SET `url1` = %s WHERE `id` = %s"
+		sql = "UPDATE `entry` SET `bili` = %s WHERE `id` = %s"
 		return self.Run( sql, args )
 
 	# 添加EP
 	def AddBiliEp( self, *args ):
-		sql = "UPDATE `ep` SET `url1` = %s WHERE `eid` = %s AND `epid` = %s "
+		sql = "UPDATE `ep` SET `bili` = %s WHERE `eid` = %s AND `epid` = %s "
 		return self.Run( sql, args )
 
 
@@ -299,7 +383,12 @@ class Tsukasa:
 	# 普通的记录方法
 	@staticmethod
 	def log( message ):
-		print Tsukasa.GetTime() + message
+		# 判断输出环境编码，并用该编码输出
+		if sys.stdout.encoding != None :
+			stdout_encoding = sys.stdout.encoding
+		else:
+			stdout_encoding = 'utf-8'
+		print Tsukasa.GetTime() + message.decode('utf-8').encode(stdout_encoding)
 
 	# 输出到记录
 	@staticmethod
