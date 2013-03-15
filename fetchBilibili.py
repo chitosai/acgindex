@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re, time, os, json
+import re, json
 from urllib import quote_plus
 
 from base.utility import *
@@ -88,7 +88,7 @@ def doAddBiliResource( eid, forceEP = False ):
 			# 然后开始匹配
 			time.sleep(3)
 			aid = SearchBilibili( name, epid )
-			if aid == ERROR_NET : 
+			if type(aid) == str and aid == ERROR_NET : 
 				Tsukasa.debug( ERROR_NET )
 				exit(1)
 

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-import datetime, time, json, urllib, sys
+import datetime, json
 
-from fetchBilibili import *
-from fetchBangumi import *
 from fix import *
 
 #

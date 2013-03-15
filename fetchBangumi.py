@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import re, time
+import re
 
 from base.utility import *
 
