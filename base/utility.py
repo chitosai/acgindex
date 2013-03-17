@@ -223,6 +223,9 @@ class Ai:
 		else:
 			entry['name_cn'] = r['real_name']
 
+		# 如果话术需要修正，那么也带上话数修正数据
+		if r['ep_revise'] != 0 : entry['ep_revise'] = r['ep_revise']
+
 		return (entry,)
 
 

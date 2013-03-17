@@ -114,6 +114,8 @@ def UpdateBili():
 
 			# 如果name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
 			if local_entry['name_cn'] == '-1' : continue
+			# 检查远端提供的话数是否需要修正
+			if 'ep_revise' in local_entry : remote_epid += local_entry['ep_revise']
 
 			local_id = local_entry['id']
 			local_name = local_entry['name_cn']
@@ -128,7 +130,7 @@ def UpdateBili():
 				continue
 
 			# 对照一下最新话，看看本地数据是否已经是最新的
-			if (local_ep['bili'] != u'-1') and (local_ep['bili'] != u''): continue
+			if (local_ep['bili'] != u'-1') and (local_ep['bili'] != u'') : continue
 
 			# 到这里就是待更新的番组了
 			# 先等待3秒好了..省得...
