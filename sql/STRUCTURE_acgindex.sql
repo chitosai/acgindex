@@ -3,11 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 03 月 17 日 11:41
+-- 生成日期: 2013 年 03 月 19 日 00:09
 -- 服务器版本: 5.1.60
 -- PHP 版本: 5.2.17p1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 --
 -- 数据库: `acgindex`
@@ -26,7 +27,7 @@ CREATE TABLE `entry` (
   `name_jp` varchar(255) NOT NULL COMMENT '日文名',
   `cid` tinyint(4) NOT NULL COMMENT '所属分类',
   `bgm` int(11) NOT NULL,
-  `bili` varchar(255) NOT NULL,
+  `bili` varchar(255) NOT NULL DEFAULT '',
   `url2` varchar(255) NOT NULL DEFAULT '',
   `url3` varchar(255) NOT NULL DEFAULT '',
   `total` int(11) NOT NULL COMMENT '总话数',
@@ -47,7 +48,7 @@ CREATE TABLE `ep` (
   `epid` int(11) NOT NULL COMMENT '第几话',
   `name_cn` varchar(255) NOT NULL COMMENT '这话的中文名',
   `name_jp` varchar(255) NOT NULL COMMENT '日文名',
-  `bili` varchar(255) NOT NULL,
+  `bili` varchar(255) NOT NULL DEFAULT '',
   `url2` varchar(255) NOT NULL DEFAULT '',
   `url3` varchar(255) NOT NULL DEFAULT '',
   KEY `pid` (`eid`,`epid`)
