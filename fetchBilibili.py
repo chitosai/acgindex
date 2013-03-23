@@ -41,49 +41,81 @@ def AddBiliResource( start, end ):
 		else : 
 			Tsukasa.log( str(i) + ' skipped')
 
+
+
+
 # 为entry、ep添加bili资源
+# forceEP=true时会强制只抓单话资源而不找合集资源
 def doAddBiliResource( eid, forceEP = False ):
 	global CATE_BGM, ERROR_NF, ERROR_NET
-	found = False
+
+	# 维护一个别名表
+	names = []
 
 	# 读取entry信息
 	ai = Ai()
 	entry = ai.GetEntryById( eid )
-
-	# 检查是否有bili别名
-	bili_name = ai.GetAlterNameById( eid, 'bili' )
-	if bili_name : entry['name_cn'] = bili_name
-
-	del ai
-
-	name = entry['name_cn'].encode('utf-8')
 	cid = entry['cid']
 	ep_total = entry['total']
+
+	names.append( entry['name_cn'] )
 
 	# 非动画或话数不正常的条目直接返回
 	if cid != CATE_BGM['anime'] or ep_total < 1 : return False
 
+	# 检查是否有bili别名
+	bili_name = ai.GetAlterNameById( eid, 'bili' )
+	if bili_name : names.append( bili_name )
+
+	# 从tag表里取其他别名
+	names.extend( ai.GetTagById(eid) )
+	del ai
+
 	# 先搜索资源
+	for name in names:
+		if LookForBiliResource( entry, name, forceEP ):
+			return True
+
+	# 实在找不到就算了
+	return ERROR_NF
+
+
+
+
+# 查找资源
+# 找到返回True / 找不到返回False
+def LookForBiliResource( entry, name, forceEP = False ):
+	eid = entry['id']
+	ep_total = entry['total']
+
+	# 留个flag表示是否找到资源
+	found = False
+
+	name = name.encode('utf-8')
 	av = SearchBilibili( name )
+
 	if type(av) != bool and av.encode('utf-8') == ERROR_NET : exit(1)
+
 	# 没有找到合集的情况下
 	if not av or forceEP:
 		# 写入“没有合集” -1
 		ai = Ai()
 		ai.AddBiliCollection( -1, eid )
 		del ai
-		Tsukasa.log( str(eid) + ' 没有找到合集')
+
 		# 再单独搜索每一话的资源
 		tried = 0 # 留一个标识变量，如果前三次匹配都没有找到资源就跳过这整部动画，节约时间
 		for epid in range( 1, ep_total + 1):
 			# 主动放弃机制
 			if tried > 3 and (not found):
+				ai = Ai()
 				for epid_x in range( epid, ep_total + 1 ):
 					ai.AddBiliEp( -1, eid, epid_x )
+				del ai
 
 				# 记录放弃本动画，然后返回NOT FOUND
 				Tsukasa.log( str(eid) + ' abandoned' )
-				return ERROR_NF
+				return False
 
 			# 然后开始匹配
 			time.sleep(3)
@@ -98,16 +130,16 @@ def doAddBiliResource( eid, forceEP = False ):
 				ai.AddBiliEp( -1, eid, epid )
 				Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' not found' )
 				tried += 1
-				continue
 
-			# 找到了这话的资源
-			if NeedLogin( aid ) : aid = 'x' + str(aid)
-			ai.AddBiliEp(aid, eid, epid )
+			else:
+				# 找到了这话的资源
+				if NeedLogin( aid ) : aid = 'x' + str(aid)
+				ai.AddBiliEp(aid, eid, epid )
+				Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' success' )
+
+				found = True
+
 			del ai
-
-			Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' success' )
-
-			found = True
 
 	# 在找到合集的情况下
 	else:
@@ -118,10 +150,13 @@ def doAddBiliResource( eid, forceEP = False ):
 			ai.AddBiliEp( av + '/index_' + unicode(epid)  + '.html', eid, epid )
 		del ai
 
+		Tsukasa.debug('find collection of {eid:' + str(eid) + '},{bgmid:' + str(entry['bgm']) + '} as ' + name)
+
 		found = True
 
-	if found : return True
-	else : return ERROR_NF
+	return found
+
+
 
 
 # 通过bili的API查找结果
@@ -151,6 +186,7 @@ def SearchBilibili( name, ep = None ):
 		return FindCollection( ret['result'] )
 	
 
+
 # 查找合集
 def FindCollection( results ):
 	# 只要有返回集，验证类型是专辑二次元就行了
@@ -162,6 +198,7 @@ def FindCollection( results ):
 	return False
 
 
+
 # 查找单话
 def FindEp( name, ep, results ):
 	for index in range(len(results)):
@@ -170,6 +207,7 @@ def FindEp( name, ep, results ):
 
 	# 如果运行到这里就是没有匹配的结果了
 	return False
+
 
 
 # 匹配番组的标题... 

@@ -5,8 +5,8 @@ from fetchBilibili import *
 
 # 重新抓取某个特定的bgm条目
 # 重新抓取时如果是动画条目会直接把ep也抓取出来
-# 这个ep资源是强制单独抓每一话的，不会抓合集！
-def UpdateEntry( bid ):
+# 默认是强制单独抓每一话的，不会抓合集！
+def UpdateEntry( bid, forceEP = True ):
 	# 检查条目是否存在
 	ai = Ai()
 	r = ai.GetEntryByBgmId( bid )
@@ -62,10 +62,30 @@ def UpdateEntry( bid ):
 	del ai
 
 	# 最后更新资源
-	doAddBiliResource( eid, True )
+	doAddBiliResource( eid, forceEP )
 
 	# 成功获取返回True
 	return True
+
+
+
+# 用tags表的数据重抓一边ep为空的条目
+def RefetchBiliResourcesWithTags():
+	# 先获取ep为空的条目
+	ai = Ai()
+	ep_list = ai.Query('SELECT * FROM `ep` WHERE `bili` = \'-1\' OR `bili` = \'\'')
+	eps = []
+
+	# 准备一份不重复的需要重新抓的entry id列表
+	for ep in ep_list:
+		if ep['eid'] not in eps:
+			eps.append(ep['eid'])
+
+	# 重抓这个列表
+	for ep in eps:
+		bgmid = ai.GetEntryById(ep)['bgm']
+		Tsukasa.log('now refetching ' + str(bgmid))
+		UpdateEntry(bgmid, False)
 
 
 

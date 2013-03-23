@@ -263,8 +263,14 @@ class Ai:
 	# 根据id取他的所有tag
 	def GetTagById( self, id ):
 		sql = "SELECT `name` FROM `tags` INNER JOIN `link` ON `link`.`tid` = `tags`.`tid` INNER JOIN `entry` ON `entry`.`id` = %s AND `entry`.`id` = `link`.`eid`"
-		return self.Query( sql, id )
+		tags = self.Query( sql, id )
+		tag_list = []
 
+		if type(tags) == tuple and len(tags) :
+			for tag in tags:
+				tag_list.append(tag['name'])
+
+		return tag_list
 
 
 
