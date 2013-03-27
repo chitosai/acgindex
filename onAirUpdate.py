@@ -124,7 +124,7 @@ def UpdateBili():
 
 			# 如果这样目测是之前的ep都没抓到了..
 			if not local_ep:
-				Tsukasa.debug('EP DATA OF %s NOT EXISTS !!!' % local_name.encode('utf-8'))
+				Tsukasa.debug('EP DATA OF %s NOT EXISTS !!!' % remote_name.encode('utf-8'))
 				continue
 
 			# 对照一下最新话，看看本地数据是否已经是最新的
@@ -136,7 +136,7 @@ def UpdateBili():
 			# 搜bili
 			r = SearchBilibili( local_name.encode('utf-8'), remote_epid )
 			if not r: 
-				Tsukasa.debug( str(local_id) + ' : ' + local_name.encode('utf-8') + \
+				Tsukasa.debug( str(local_id) + ' : ' + remote_name.encode('utf-8') + \
 								' ep.' + str(remote_epid) + ' {BILI} not released yet' )
 				continue
 
@@ -155,7 +155,7 @@ def UpdateBili():
 			# 	continue
 
 			# 运行到这里就是更新完毕啦
-			Tsukasa.debug('%s ep.%s update succeed' % (local_name.encode('utf-8'), remote_epid))
+			Tsukasa.debug('%s ep.%s update succeed' % (remote_name.encode('utf-8'), remote_epid))
 
 
 # 被直接执行时...
