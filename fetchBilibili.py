@@ -66,11 +66,14 @@ def doAddBiliResource( eid, forceEP = False ):
 
 	# 检查是否有bili别名
 	bili_name = ai.GetAlterNameById( eid, 'bili' )
-	if bili_name : names.append( bili_name )
-
-	# 从tag表里取其他别名
-	names.extend( ai.GetTagById(eid) )
-	del ai
+	if bili_name: 
+		# 有人工指定的bili名说明错不了就是她了
+		names.pop()
+		names.append( bili_name )
+	else:
+		# 否则从tag表里取其他别名，加上entry['name_cn']一起搜索
+		names.extend( ai.GetTagById(eid) )
+		del ai
 
 	# 先搜索资源
 	for name in names:
@@ -94,6 +97,8 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 	name = name.encode('utf-8')
 	av = SearchBilibili( name )
+
+	Tsukasa.log(name)
 
 	if type(av) != bool and av.encode('utf-8') == ERROR_NET : exit(1)
 

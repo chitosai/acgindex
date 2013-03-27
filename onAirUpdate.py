@@ -112,8 +112,6 @@ def UpdateBili():
 			else:
 				local_entry = local_entry[0]
 
-			# 如果name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
-			if local_entry['name_cn'] == '-1' : continue
 			# 检查远端提供的话数是否需要修正
 			if 'ep_revise' in local_entry : remote_epid += local_entry['ep_revise']
 
