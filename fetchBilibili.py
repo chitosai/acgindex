@@ -98,8 +98,6 @@ def LookForBiliResource( entry, name, forceEP = False ):
 	name = name.encode('utf-8')
 	av = SearchBilibili( name )
 
-	Tsukasa.log(name)
-
 	if type(av) != bool and av.encode('utf-8') == ERROR_NET : exit(1)
 
 	# 没有找到合集的情况下
