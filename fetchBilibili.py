@@ -18,7 +18,8 @@ EP_IN_GREEK	= ['I','II','III','IV','V','VI','VII','VIII','IX','X']
 # 匹配bili单话资源的正则
 BILI_REGX = [
 	'第\s*%s\s*话',
-	'\s*%s\s*[^月]'
+	'\s*%s\s*[^月]',
+	'\s*%s$'
 ]
 
 ###
