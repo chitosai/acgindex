@@ -40,7 +40,13 @@ def UpdateEntry( bid, forceEP = True ):
 		if m:
 			total = m.group(1)
 		else:
-			total = 100 # 一般需要重抓数据的应该都是新番吧，新番抓不到总话数的一般是年番之类的长篇，就当做100话来处理好了
+			# 一般需要重抓数据的应该都是新番吧，新番抓不到总话数的一般是年番之类的长篇，就当做100话来处理好了
+			total = 100 
+			# 这个时候为了防止章节列表数量太少，先添加100个空白条目到ep表里
+			# 不先添加好的话，新番自动更新时会认为ep表有误
+			ai = Ai()
+			for i in range(1, 100):
+				ai.AddEp(eid, i, '', '')
 
 		# 获取每话信息
 		r = FetchEpOfAnEntryFromBangumi( eid, str(bid) )
