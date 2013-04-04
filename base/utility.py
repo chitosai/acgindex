@@ -4,6 +4,7 @@ import urllib2
 import MySQLdb
 import time
 import socket
+import zlib
 
 from StringIO import StringIO
 from gzip import GzipFile
@@ -101,10 +102,23 @@ class Haruka:
 		    buf = StringIO( res.read() )
 		    f = GzipFile( fileobj=buf )
 		    data = f.read()
+		elif res.info().get('Content-Encoding') == 'deflate':
+			gz = StringIO( Haruka.deflate( res.read() ) )
+			_res = urllib2.addinfourl( gz, res.headers, res.url, res.code )
+			_res.msg = res.msg
+			data = _res.read()
 		else:
 			data = res.read()
 
 		return data
+
+	# 尝试对reflate内容进行解压...
+	@staticmethod
+	def deflate( data ):
+		try:
+			return zlib.decompress(data, -zlib.MAX_WBITS)
+		except zlib.error:
+			return zlib.decompress(data)
 
 
 
