@@ -1,7 +1,7 @@
 acgindex
 ========
 
-source code of the backend supporting system of acgindex.us. i'm still working on it
+source code of the resource fetching system of acgindex.us. i'm still working on it.
 
 ### base/accounts.py
 	DB_HOST = ''
