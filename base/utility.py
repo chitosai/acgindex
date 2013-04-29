@@ -131,8 +131,8 @@ class Ai:
 		try:
 			self._ = MySQLdb.connect( DB_HOST, DB_USER, DB_PASS, dbname, charset="utf8" )
 			self.c  = self._.cursor( MySQLdb.cursors.DictCursor ) # 使fetchall的返回值为带key的字典形式
-		except:
-			Tsukasa.debug('数据库连接出错')
+		except Exception, e:
+			Tsukasa.debug('数据库连接出错 : ' + str(e))
 			exit(1)
 
 	# 析构时关闭数据库
