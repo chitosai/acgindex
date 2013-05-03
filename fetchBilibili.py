@@ -254,13 +254,16 @@ def NeedLogin( av ):
 	if not c : return False
 
 	if '<div class="z-msg">' in c:
-		# 不带cookie时提示403了，再带上cookie看看
-		c = Haruka.GetWithCookie( URL_BILI % av, FILE_COOKIE_BILI )
-		if not c: return False
+		# # 不带cookie时提示403了，再带上cookie看看
+		# c = Haruka.GetWithCookie( URL_BILI % av, FILE_COOKIE_BILI )
+		# if not c: return False
 
-		# 带上cookie后没有403提示了，则认为这是会员限定视频
-		if '<div class="z-msg">' not in c:
-			return True
+		# # 带上cookie后没有403提示了，则认为这是会员限定视频
+		# if '<div class="z-msg">' not in c:
+		# 	return True
+
+		# 现在bili增加了验证码，登录失效了，所以凡是403的统统算作需要登录吧
+		return True
 
 	return False
 
