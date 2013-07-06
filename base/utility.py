@@ -12,7 +12,6 @@ from urllib import urlretrieve
 from cookielib import MozillaCookieJar
 
 from config import *
-from accounts import *
 
 # 设置网络超时时间
 socket.setdefaulttimeout(15) 

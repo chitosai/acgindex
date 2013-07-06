@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import platform, os, sys
 
+from accounts import *
+
 # 版本信息
 ACGINDEX_VERSION = '0.1 Beta'
-ACGINDEX_UA = ('User-agent', 'ACGINDEX ' + ACGINDEX_VERSION + ' /=w= ( im just a little spider; please let me in; )' )
+ACGINDEX_UA = ('User-agent', 'ACGINDEX/' + ACGINDEX_VERSION + ' ( im just a little spider; please let me in; contact: ' + ACGINDEX_EMAIL + ' )' )
 
 # DEBUG MODE
 DEBUG = False
@@ -26,8 +28,8 @@ FILE_PROXY_LIST   = 'proxy.txt'
 
 # 地址前缀
 URL_BILI					= 'http://www.bilibili.tv/video/av%s/'
-URL_BILI_SEARCH             = 'http://api.bilibili.tv/search?type=json&keyword=%s&page=1&order=default'
-URL_BILI_ON_AIR             = 'http://api.bilibili.tv/bangumi?type=json&btype=2&weekday=0'
+URL_BILI_SEARCH             = 'http://api.bilibili.tv/search?type=json&keyword=%s&page=1&order=default&appkey=' + BILI_APPKEY
+URL_BILI_ON_AIR             = 'http://api.bilibili.tv/bangumi?type=json&btype=2&weekday=0&appkey=' + BILI_APPKEY
 URL_BGM						= 'http://bgm.tv/subject/'
 URL_RW						= 'http://d.52rwdm.com/view/%s.html'
 URL_KTXP					= 'http://bt.ktxp.com'
