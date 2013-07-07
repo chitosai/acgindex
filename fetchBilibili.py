@@ -137,7 +137,10 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 			else:
 				# 找到了这话的资源
-				if NeedLogin( aid ) : aid = 'x' + str(aid)
+
+				# 原本要检查该番是否需要登录，因为Bili增加了验证码所以无法登录了，暂时注释掉吧
+				# if NeedLogin( aid ) : aid = 'x' + str(aid)
+
 				ai.AddBiliEp(aid, eid, epid )
 				Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' success' )
 
@@ -246,6 +249,7 @@ def MatchTitle( name, ep, title ):
 
 
 # 检查一个视频是否是会员限定
+# 因为bili增加了验证码，这个功能暂时失效
 def NeedLogin( av ):
 	global URL_BILI, FILE_COOKIE_BILI
 
@@ -255,12 +259,12 @@ def NeedLogin( av ):
 
 	if '<div class="z-msg">' in c:
 		# # 不带cookie时提示403了，再带上cookie看看
-		# c = Haruka.GetWithCookie( URL_BILI % av, FILE_COOKIE_BILI )
-		# if not c: return False
+		c = Haruka.GetWithCookie( URL_BILI % av, FILE_COOKIE_BILI )
+		if not c: return False
 
 		# # 带上cookie后没有403提示了，则认为这是会员限定视频
-		# if '<div class="z-msg">' not in c:
-		# 	return True
+		if '<div class="z-msg">' not in c:
+			return True
 
 		# 现在bili增加了验证码，登录失效了，所以凡是403的统统算作需要登录吧
 		return True
