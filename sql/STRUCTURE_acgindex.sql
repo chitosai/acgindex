@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.8
+-- version 3.5.8.1
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 03 月 19 日 00:09
--- 服务器版本: 5.1.60
--- PHP 版本: 5.2.17p1
+-- 生成日期: 2013 年 07 月 12 日 17:27
+-- 服务器版本: 5.5.31-0ubuntu0.12.04.1
+-- PHP 版本: 5.3.10-1ubuntu3.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -45,7 +45,7 @@ CREATE TABLE `entry` (
 DROP TABLE IF EXISTS `ep`;
 CREATE TABLE `ep` (
   `eid` int(11) NOT NULL COMMENT '属于哪部作品',
-  `epid` int(11) NOT NULL COMMENT '第几话',
+  `epid` float NOT NULL COMMENT '第几话',
   `name_cn` varchar(255) NOT NULL COMMENT '这话的中文名',
   `name_jp` varchar(255) NOT NULL COMMENT '日文名',
   `bili` varchar(255) NOT NULL DEFAULT '',
@@ -82,6 +82,18 @@ CREATE TABLE `names` (
   `ep_revise` int(11) NOT NULL DEFAULT '0' COMMENT '修正来源站发来的话数错误',
   PRIMARY KEY (`index_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `statistics`
+--
+
+DROP TABLE IF EXISTS `statistics`;
+CREATE TABLE `statistics` (
+  `key` varchar(24) COLLATE utf8_unicode_ci NOT NULL COMMENT '统计值名',
+  `value` int(11) NOT NULL COMMENT '统计值'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
