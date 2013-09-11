@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 07 月 12 日 17:27
+-- 生成日期: 2013 年 09 月 11 日 21:01
 -- 服务器版本: 5.5.31-0ubuntu0.12.04.1
 -- PHP 版本: 5.3.10-1ubuntu3.6
 
@@ -70,6 +70,24 @@ CREATE TABLE `link` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+  `bgm` int(11) NOT NULL COMMENT 'bgmid',
+  `epid` int(11) NOT NULL COMMENT '话数id',
+  `source` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT '来源网站',
+  `status` tinyint(1) NOT NULL COMMENT '是否找到资源',
+  `count` int(11) NOT NULL DEFAULT '1' COMMENT '访问量',
+  PRIMARY KEY (`id`),
+  KEY `eid` (`bgm`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `names`
 --
 
@@ -80,7 +98,8 @@ CREATE TABLE `names` (
   `index_name` varchar(36) NOT NULL COMMENT 'bili新番列表收录的名字',
   `real_name` varchar(36) NOT NULL COMMENT 'up主实际上传时用的名字',
   `ep_revise` int(11) NOT NULL DEFAULT '0' COMMENT '修正来源站发来的话数错误',
-  PRIMARY KEY (`index_name`)
+  KEY `index_name` (`index_name`),
+  KEY `eid` (`eid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
