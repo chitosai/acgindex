@@ -26,6 +26,10 @@ PATH_TMP     = ABS_PATH + '_tmp_' + SLASH
 FILE_COOKIE_BILI  = 'bilibili.txt'
 FILE_PROXY_LIST   = 'proxy.txt'
 
+# 搜索分类关键词
+BILI_SEARCH_PREFIX_SINGLE = ' @完结动画'
+BILI_SEARCH_PREFIX_COLLECTION = ' @新番'
+
 # 地址前缀
 URL_BILI					= 'http://www.bilibili.tv/video/av%s/'
 URL_BILI_SEARCH             = 'http://api.bilibili.tv/search?type=json&keyword=%s&page=1&order=default&appkey=' + BILI_APPKEY

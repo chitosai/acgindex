@@ -168,11 +168,11 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 # 通过bili的API查找结果
 def SearchBilibili( name, ep = None ):
-	global URL_BILI_SEARCH, ERROR_NET, FILE_COOKIE_BILI
+	global URL_BILI_SEARCH, ERROR_NET, FILE_COOKIE_BILI, BILI_SEARCH_PREFIX_SINGLE, BILI_SEARCH_PREFIX_COLLECTION
 
 	# 加上搜索范围
-	if ep : keyword = name + ' ' + str(ep) + ' @新番'
-	else : keyword = name + ' @合集'
+	if ep : keyword = name + ' ' + str(ep) + BILI_SEARCH_PREFIX_SINGLE
+	else : keyword = name + BILI_SEARCH_PREFIX_COLLECTION
 
 	# 连接
 	c = Haruka.GetWithCookie( URL_BILI_SEARCH % quote_plus(keyword), FILE_COOKIE_BILI )
