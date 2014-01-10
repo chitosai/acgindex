@@ -39,7 +39,7 @@ def UpdateBiliAirList():
 		elif local_entry[0]['name_cn'] == '-1' : continue
 
 		if not local_entry:
-			Tsukasa.debug('%s - ENTRY NOT FOUND !!!' % remote_name.encode('utf-8'))
+			Tsukasa.debug('[NO ENTRY] name: %s' % remote_name.encode('utf-8'))
 			continue
 		else:
 			local_entry = local_entry[0]
@@ -56,7 +56,7 @@ def UpdateBiliAirList():
 		# 如果条目不存在，那目测是出问题了需要重抓的.. 
 		# 比如之前爬到这个条目时bangumi上还没有“话数”、“章节”等数据，现在重抓一次可以获得最新数据
 		if not local_ep:
-			Tsukasa.debug('%s : %s - EP DATA NOT FOUND' % (local_id, remote_name.encode('utf-8')))
+			Tsukasa.debug('[NO EP] id: %s | bid: %s | name : %s' % (local_id, local_bid, remote_name.encode('utf-8')))
 			UpdateEntry(local_bid)
 
 
@@ -104,10 +104,9 @@ def UpdateBili():
 			# 如果取到name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
 			elif local_entry[0]['name_cn'] == '-1' : continue
 
-			# 这个情况应该是在一个季度刚开始连载时，需要人工校对bangumi条目名称和Bili资源名称时的提示
-			# 如果在连载中出现这个提示应该是出问题了吧
+			# 此番应该是需要添加bili别名
 			if not local_entry:
-				Tsukasa.debug('%s NOT FOUND IN DATABASE !!!' % remote_name.encode('utf-8'))
+				Tsukasa.debug('[NO ENTRY] name: %s' % remote_name.encode('utf-8'))
 				continue
 			else:
 				local_entry = local_entry[0]
@@ -122,9 +121,10 @@ def UpdateBili():
 			
 			del ai
 
-			# 如果这样目测是之前的ep都没抓到了..
+			# ep表为空，这个情况应该是在一个季度刚开始连载时
+			# 如果在连载中出现这个提示应该是出问题了吧
 			if not local_ep:
-				Tsukasa.debug('EP DATA OF %s NOT EXISTS !!!' % remote_name.encode('utf-8'))
+				Tsukasa.debug('[NO EP] id: %s | bid: %s | name: %s' % (local_id, local_bid, remote_name.encode('utf-8')))
 				continue
 
 			# 对照一下最新话，看看本地数据是否已经是最新的
@@ -136,8 +136,7 @@ def UpdateBili():
 			# 搜bili
 			r = SearchBilibili( local_name.encode('utf-8'), remote_epid )
 			if not r: 
-				Tsukasa.debug( str(local_id) + ' : ' + remote_name.encode('utf-8') + \
-								' ep.' + str(remote_epid) + ' {BILI} not released yet' )
+				Tsukasa.debug( '[skip] id: %s | ep.%s | name: %s' % (str(local_id), str(remote_epid), remote_name.encode('utf-8')))
 				continue
 
 			# 找到了的话，就插入数据库
@@ -155,7 +154,7 @@ def UpdateBili():
 			# 	continue
 
 			# 运行到这里就是更新完毕啦
-			Tsukasa.debug('%s ep.%s update succeed' % (remote_name.encode('utf-8'), remote_epid))
+			Tsukasa.debug('[succss] id: %s | ep.%s | name: %s' % (local_id, remote_name.encode('utf-8'), remote_epid))
 
 
 # 被直接执行时...
