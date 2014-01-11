@@ -154,7 +154,7 @@ def UpdateBili():
 			# 	continue
 
 			# 运行到这里就是更新完毕啦
-			Tsukasa.debug('[succss] id: %s | ep.%s | name: %s' % (local_id, remote_name.encode('utf-8'), remote_epid))
+			Tsukasa.debug('[succss] id: %s | ep.%s | name: %s' % (local_id, remote_epid, remote_name.encode('utf-8')))
 
 
 # 被直接执行时...
