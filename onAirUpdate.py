@@ -125,6 +125,8 @@ def UpdateBili():
 			# 如果在连载中出现这个提示应该是出问题了吧
 			if not local_ep:
 				Tsukasa.debug('[NO EP] id: %s | bid: %s | name: %s' % (local_id, local_bid, remote_name.encode('utf-8')))
+				# 自动添加ep表
+				UpdateEntry(local_bid)
 				continue
 
 			# 对照一下最新话，看看本地数据是否已经是最新的
