@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.8.1
+-- version 3.4.10.1deb1
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2013 年 09 月 11 日 21:01
--- 服务器版本: 5.5.31-0ubuntu0.12.04.1
--- PHP 版本: 5.3.10-1ubuntu3.6
+-- 生成日期: 2014 年 03 月 18 日 14:31
+-- 服务器版本: 5.5.35
+-- PHP 版本: 5.3.10-1ubuntu3.10
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -75,15 +75,13 @@ CREATE TABLE `link` (
 
 DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-  `bgm` int(11) NOT NULL COMMENT 'bgmid',
-  `epid` int(11) NOT NULL COMMENT '话数id',
-  `source` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT '来源网站',
-  `status` tinyint(1) NOT NULL COMMENT '是否找到资源',
-  `count` int(11) NOT NULL DEFAULT '1' COMMENT '访问量',
-  PRIMARY KEY (`id`),
-  KEY `eid` (`bgm`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `eid` mediumint(9) NOT NULL COMMENT '条目id',
+  `epid` smallint(6) NOT NULL COMMENT '话数，合集时留空',
+  `source` tinyint(4) NOT NULL COMMENT '来源站',
+  `found` tinyint(1) NOT NULL COMMENT '是否找到资源',
+  `ip` bigint(11) NOT NULL COMMENT '客户端ip',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'log时间'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -101,18 +99,6 @@ CREATE TABLE `names` (
   KEY `index_name` (`index_name`),
   KEY `eid` (`eid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `statistics`
---
-
-DROP TABLE IF EXISTS `statistics`;
-CREATE TABLE `statistics` (
-  `key` varchar(24) COLLATE utf8_unicode_ci NOT NULL COMMENT '统计值名',
-  `value` int(11) NOT NULL COMMENT '统计值'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
