@@ -136,10 +136,8 @@ def LookForBiliResource( entry, name, forceEP = False ):
 				tried += 1
 
 			else:
-				# 找到了这话的资源
-
-				# 因为bili封了我AWS所在的日本东京的访问...现在全部都是403了，只好注释掉了
-				# if NeedLogin( aid ) : aid = 'x' + str(aid)
+				# 找到了这话的资源，检查是否需要登录
+				if NeedLogin( aid ) : aid = 'x' + str(aid)
 
 				ai.AddBiliEp(aid, eid, epid )
 				Tsukasa.log( str(eid) + ' ep.' + str(epid) + ' success' )
