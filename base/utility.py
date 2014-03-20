@@ -5,6 +5,7 @@ import MySQLdb
 import time
 import socket
 import zlib
+import traceback
 
 from StringIO import StringIO
 from gzip import GzipFile
@@ -408,12 +409,7 @@ class Tsukasa:
 	# 普通的记录方法
 	@staticmethod
 	def log( message ):
-		# 判断输出环境编码，并用该编码输出
-		if sys.stdout.encoding != None :
-			stdout_encoding = sys.stdout.encoding
-		else:
-			stdout_encoding = 'utf-8'
-		print Tsukasa.GetTime() + message.decode('utf-8').encode(stdout_encoding)
+		print Tsukasa.GetTime() + message
 
 	# 输出到记录
 	@staticmethod

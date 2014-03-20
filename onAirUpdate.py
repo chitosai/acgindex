@@ -166,7 +166,13 @@ if __name__ == '__main__':
 
 		if param == 'update_bili':
 			Tsukasa.debug('update bili resources\n========================================================')
-			UpdateBili()
+
+			try:
+				UpdateBili()
+			except Exception, e:
+				Tsukasa.debug('Error: %s' % e)
+				Tsukasa.debug(traceback.format_exc())
+				
 			Tsukasa.debug('END\n')
 
 		elif param == 'check_bili': 
