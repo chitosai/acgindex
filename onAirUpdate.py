@@ -4,66 +4,6 @@ import datetime, json
 from fix import *
 
 #
-# 检查bili的番组表
-# 如果出现提示，说明bili番组表里记录的动画标题和entry表中的不符合，需要到bili_name中手工增加关联
-#
-def UpdateBiliAirList():
-	global ERROR_NET, URL_BILI_ON_AIR, NAMES_SOURCES
-
-	# 获取周日的列表，这样可以拿到所有番组
-	c = Haruka.Get( URL_BILI_ON_AIR )
-	if not c:
-		return ERROR_NET
-
-	# 解析
-	r = json.loads(c)
-	if type(r) != dict : 
-		Tsukasa.debug('bili送来的JSON好像有问题')
-		return False
-
-	on_air_list = r['list']
-	for each in on_air_list:
-		# 从json里取些需要的数据
-		remote_entry = on_air_list[each]
-		remote_name = remote_entry['title']
-		remote_epid = remote_entry['bgmcount'] - 1
-		if remote_epid < 1 : remote_epid = 1
-
-		# 先核对本地数据库是否有相应条目
-		ai = Ai()
-		# 先从names表里找，这里也存着-1等特殊状态
-		local_entry = ai.GetAnimeByAlterName( 'bili', remote_name )
-		# 如果在names表里没有找到，那么到entry表里取
-		if not local_entry : local_entry = ai.GetAnimeByName(remote_name)
-		# 如果取到name_cn == -1，说明是人工验证只有生肉的或不存在的，跳过
-		elif local_entry[0]['name_cn'] == '-1' : continue
-
-		if not local_entry:
-			Tsukasa.debug('[NO ENTRY] name: %s' % remote_name.encode('utf-8'))
-			continue
-		else:
-			local_entry = local_entry[0]
-
-		local_id = local_entry['id']
-		local_bid = local_entry['bgm']
-		local_name = local_entry['name_cn']
-
-		# 最后获取最新一话的前一话的ep
-		local_ep = ai.GetEp( local_id, remote_epid )
-
-		del ai
-
-		# 如果条目不存在，那目测是出问题了需要重抓的.. 
-		# 比如之前爬到这个条目时bangumi上还没有“话数”、“章节”等数据，现在重抓一次可以获得最新数据
-		if not local_ep:
-			Tsukasa.debug('[NO EP] id: %s | bid: %s | name : %s' % (local_id, local_bid, remote_name.encode('utf-8')))
-			UpdateEntry(local_bid)
-
-
-
-
-
-#
 # 每小时执行一次，查找番组资源
 #
 def UpdateBili():
@@ -158,7 +98,6 @@ def UpdateBili():
 			# 运行到这里就是更新完毕啦
 			Tsukasa.debug('[succss] id: %s | ep.%s | name: %s' % (local_id, remote_epid, remote_name.encode('utf-8')))
 
-
 # 被直接执行时...
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
@@ -174,11 +113,6 @@ if __name__ == '__main__':
 				Tsukasa.debug(traceback.format_exc())
 				
 			Tsukasa.debug('END\n')
-
-		elif param == 'check_bili': 
-			Tsukasa.debug('\nupdate bili on-air list\n========================================================')
-			UpdateBiliAirList()
-			Tsukasa.debug('process end\n')
 
 	# 没有传入参数
 	else : Tsukasa.debug('No param specified')

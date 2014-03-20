@@ -42,9 +42,6 @@ def AddBiliResource( start, end ):
 		else : 
 			Tsukasa.log( str(i) + ' skipped')
 
-
-
-
 # 为entry、ep添加bili资源
 # forceEP=true时会强制只抓单话资源而不找合集资源
 def doAddBiliResource( eid, forceEP = False ):
@@ -82,9 +79,6 @@ def doAddBiliResource( eid, forceEP = False ):
 
 	# 实在找不到就算了
 	return ERROR_NF
-
-
-
 
 # 查找资源
 # 找到返回True / 找不到返回False
@@ -161,9 +155,6 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 	return found
 
-
-
-
 # 通过bili的API查找结果
 def SearchBilibili( name, ep = None ):
 	global URL_BILI_SEARCH, ERROR_NET, FILE_COOKIE_BILI, BILI_SEARCH_PREFIX_SINGLE, BILI_SEARCH_PREFIX_COLLECTION
@@ -190,8 +181,6 @@ def SearchBilibili( name, ep = None ):
 	else :
 		return FindCollection( ret['result'] )
 	
-
-
 # 查找合集
 def FindCollection( results ):
 	# 只要有返回集，验证类型是专辑二次元就行了
@@ -202,8 +191,6 @@ def FindCollection( results ):
 	# 如果运行到这里就是没有匹配的结果了
 	return False
 
-
-
 # 查找单话
 def FindEp( name, ep, results ):
 	for index in range(len(results)):
@@ -212,8 +199,6 @@ def FindEp( name, ep, results ):
 
 	# 如果运行到这里就是没有匹配的结果了
 	return False
-
-
 
 # 匹配番组的标题... 
 # 目前的策略是，分辨作品别名交给bili去做，只要bili返回了结果，我就认为这是我要找的作品
@@ -244,8 +229,6 @@ def MatchTitle( name, ep, title ):
 	# 不匹配
 	return False
 
-
-
 # 检查一个视频是否是会员限定
 # 因为bili增加了验证码，这个功能暂时失效
 def NeedLogin( av ):
@@ -268,8 +251,6 @@ def NeedLogin( av ):
 		return True
 
 	return False
-
-
 
 # 登录bili
 def LoginBilibili():

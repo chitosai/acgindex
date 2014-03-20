@@ -34,7 +34,6 @@ def FetchBangumi( start, end ):
 		else:
 			Tsukasa.log( i + ' dosent exists')
 
-
 # 根据id从Bangumi抓一个条目
 def FetchSubjectFromBangumi( id ):
 	global URL_BGM, CATE_BGM, ERROR_NET
@@ -111,8 +110,6 @@ def FetchSubjectFromBangumi( id ):
 	# 成功获取返回True
 	return True
 
-
-
 #
 # 抓章节
 #
@@ -151,8 +148,6 @@ def FetchEpFromBangumi( start, end ):
 		time.sleep(2)
 
 	return True
-
-
 
 # 根据id从bangumi抓取 动画 条目的话数信息
 def FetchEpOfAnEntryFromBangumi( id, bgmid ):

@@ -40,8 +40,6 @@ class Haruka:
 			else:
 				return False
 
-
-
 	# 带cookie的 GET / POST
 	# 不带data时就是GET,带data时当成POST，并且保存新cookie
 	@staticmethod
@@ -61,7 +59,6 @@ class Haruka:
 			AmagamiSS = urllib2.build_opener( ckproc )
 			AmagamiSS.addheaders = [ ACGINDEX_UA ]
 
-
 			if data != '':
 				request = urllib2.Request( url = url, data = data )
 				res = AmagamiSS.open( request )
@@ -78,7 +75,6 @@ class Haruka:
 			else:
 				return False
 
-
 	# 抓图
 	@staticmethod
 	def GetImage( eid, cid, url, retry = 3 ):
@@ -91,8 +87,6 @@ class Haruka:
 				return Haruka.GetImage( eid, cid, url, retry-1 )
 			else:
 				return False
-
-
 
 	# 取数据，主要是检查有没有gzip
 	@staticmethod
@@ -120,9 +114,6 @@ class Haruka:
 		except zlib.error:
 			return zlib.decompress(data)
 
-
-
-
 class Ai:
 	'七咲逢 Nanasaki Ai'
 
@@ -140,7 +131,6 @@ class Ai:
 		self.c.close()
 		self._.close()
 
-
 	# 通用部分
 	###
 
@@ -157,7 +147,6 @@ class Ai:
 			Tsukasa.debug( str(e[0]) + ' : ' + e[1] )
 			return False # 返回False表示数据库出错
 
-
 	# 执行
 	def Run( self, sql, data ):
 		try:
@@ -169,7 +158,6 @@ class Ai:
 			Tsukasa.debug( str(e[0]) + ' : ' + e[1] )
 			# 其他错误要捕获
 			return False # 返回False表示数据库出错
-
 
 	# BGM部分
 	###
@@ -199,9 +187,6 @@ class Ai:
 		r = self.Query( sql, name )
 		if len(r): return r
 		else: return 0
-
-
-
 
 	# 根据名字取动画
 	def GetAnimeByName( self, name ):
@@ -242,9 +227,6 @@ class Ai:
 
 		return (entry,)
 
-
-
-
 	# 检查某个entry是否有别名
 	def GetAlterNameById( self, eid, source ):
 		global NAMES_SOURCES
@@ -260,19 +242,12 @@ class Ai:
 		else:
 			return False
 
-
-
-
 	# 获取EP数据
 	def GetEp( self, *args ):
 		sql = "SELECT * FROM `ep` WHERE `eid` = %s AND `epid` = %s"
 		r = self.Query( sql, args )
 		if len(r) : return r[0]
 		else: return False
-
-
-
-
 
 	# 根据id取他的所有tag
 	def GetTagById( self, id ):
@@ -286,21 +261,15 @@ class Ai:
 
 		return tag_list
 
-
-
-
 	# 按分类获取
 	def GetEntryByCategory( self, category_name ):
 		global CATE_BGM
 		sql = "SELECT `id`,`name_cn` FROM `entry` WHERE `cid` = " + str(CATE_BGM[category_name])
 		return self.Query( sql )
 
-
-
 	### 
 	### 插入
 	###
-
 
 	# 添加entry
 	def AddEntry( self, *args ):
@@ -362,14 +331,9 @@ class Ai:
 		sql = "INSERT INTO `names` ( `eid`, `source`, `index_name`, `real_name` ) VALUES ( %s, %s, %s, %s )"
 		return self.Run( sql, ( eid, source_id, index_name, real_name ))
 
-
-
-
 	###
 	### 更新
 	###
-
-
 
 	# 更新条目
 	def UpdateTotalEpOfAnEntry( self, *args ):
@@ -380,9 +344,6 @@ class Ai:
 	def UpdateEpBili( self, *args ):
 		sql = "UPDATE `ep` SET `bili` = %s WHERE `eid` = %s AND `epid` = %s"
 		return self.Run( sql, args )
-
-
-
 
 	# BILI部分
 	###
@@ -396,7 +357,6 @@ class Ai:
 	def AddBiliEp( self, *args ):
 		sql = "UPDATE `ep` SET `bili` = %s WHERE `eid` = %s AND `epid` = %s "
 		return self.Run( sql, args )
-
 
 class Tsukasa:
 	'绚辻 词 Ayatsuji Tsukasa'

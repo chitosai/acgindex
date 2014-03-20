@@ -35,7 +35,6 @@ URL_BILI					= 'http://www.bilibili.tv/video/av%s/'
 URL_BILI_SEARCH             = 'http://api.bilibili.tv/search?type=json&keyword=%s&page=1&order=default&appkey=' + BILI_APPKEY
 URL_BILI_ON_AIR             = 'http://api.bilibili.tv/bangumi?type=json&btype=2&weekday=0&appkey=' + BILI_APPKEY
 URL_BGM						= 'http://bgm.tv/subject/'
-URL_RW						= 'http://d.52rwdm.com/view/%s.html'
 URL_KTXP					= 'http://bt.ktxp.com'
 URL_KTXP_SEARCH_COLLECTION	= URL_KTXP + '/search.php?sort_id=28&order=seeders&keyword='
 URL_KTXP_SEARCH_SINGLE		= URL_KTXP + '/search.php?sort_id=12&order=seeders&keyword='
@@ -51,7 +50,8 @@ CATE_BGM = {
 }
 
 NAMES_SOURCES = {
-	'bili'  : 0
+	'bili'  : 0,
+    'bt'    : 9
 }
 
 # 一些通用的出错提示
