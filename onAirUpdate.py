@@ -27,7 +27,7 @@ def UpdateBili():
 		remote_entry = on_air_list[each]
 		remote_time = remote_entry['lastupdate']
 		remote_name = remote_entry['title']
-		remote_epid = remote_entry['bgmcount']
+		remote_epid = int(remote_entry['bgmcount'])
 
 		# 根据lastupdate时间来判断是否是最新话
 		# 259200秒 = 72小时，最后更新时间距离现在超过72小时说明不是最新一话
@@ -78,7 +78,7 @@ def UpdateBili():
 			# 搜bili
 			r = SearchBilibili( local_name.encode('utf-8'), remote_epid )
 			if not r: 
-				Tsukasa.debug( '[skip] id: %s | ep.%s | name: %s' % (str(local_id), str(remote_epid), remote_name.encode('utf-8')))
+				Tsukasa.debug( '[skip] id: %s | ep.%s | name: %s' % (local_id, remote_epid, remote_name.encode('utf-8')))
 				continue
 
 			# 找到了的话，就插入数据库
