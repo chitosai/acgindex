@@ -348,11 +348,6 @@ class Ai:
 	# BILI部分
 	###
 
-	# 添加合集
-	def AddBiliCollection( self, *args ):
-		sql = "UPDATE `entry` SET `bili` = %s WHERE `id` = %s"
-		return self.Run( sql, args )
-
 	# 添加EP
 	def AddBiliEp( self, *args ):
 		sql = "UPDATE `ep` SET `bili` = %s WHERE `eid` = %s AND `epid` = %s "

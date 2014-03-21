@@ -27,8 +27,8 @@ FILE_COOKIE_BILI  = 'bilibili.txt'
 FILE_PROXY_LIST   = 'proxy.txt'
 
 # 搜索分类关键词
-BILI_SEARCH_PREFIX_SINGLE = ' @新番'
-BILI_SEARCH_PREFIX_COLLECTION = ' @完结动画'
+BILI_SEARCH_PREFIX_SINGLE = '新番'
+BILI_SEARCH_PREFIX_COLLECTION = '完结动画'
 
 # 地址前缀
 URL_BILI					= 'http://www.bilibili.tv/video/av%s/'

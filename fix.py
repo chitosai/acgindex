@@ -73,24 +73,6 @@ def UpdateEntry( bid, forceEP = True ):
 	# 成功获取返回True
 	return True
 
-# 用tags表的数据重抓一边ep为空的条目
-def RefetchBiliResourcesWithTags():
-	# 先获取ep为空的条目
-	ai = Ai()
-	ep_list = ai.Query('SELECT * FROM `ep` WHERE `bili` = \'-1\' OR `bili` = \'\'')
-	eps = []
-
-	# 准备一份不重复的需要重新抓的entry id列表
-	for ep in ep_list:
-		if ep['eid'] not in eps:
-			eps.append(ep['eid'])
-
-	# 重抓这个列表
-	for ep in eps:
-		bgmid = ai.GetEntryById(ep)['bgm']
-		Tsukasa.log('now refetching ' + str(bgmid))
-		UpdateEntry(bgmid, False)
-
 # 手动为条目绑定别名，并抓取该条目在bangumi的最新数据
 def UpdateEntryWithAlterName( bgmid, source, index_name, real_name ):
 	ai = Ai()

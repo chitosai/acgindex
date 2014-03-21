@@ -43,7 +43,6 @@ def AddBiliResource( start, end ):
 			Tsukasa.log( str(i) + ' skipped')
 
 # 为entry、ep添加bili资源
-# forceEP=true时会强制只抓单话资源而不找合集资源
 def doAddBiliResource( eid, forceEP = False ):
 	global CATE_BGM, ERROR_NF, ERROR_NET
 
@@ -96,11 +95,7 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 	# 没有找到合集的情况下
 	if not av or forceEP:
-		# 写入“没有合集” -1
-		ai = Ai()
-		ai.AddBiliCollection( -1, eid )
-		del ai
-
+		
 		# 再单独搜索每一话的资源
 		tried = 0 # 留一个标识变量，如果前三次匹配都没有找到资源就跳过这整部动画，节约时间
 		for epid in range( 1, ep_total + 1):
@@ -142,9 +137,7 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 	# 在找到合集的情况下
 	else:
-		# 写入合集
 		ai = Ai()
-		ai.AddBiliCollection( av, eid )
 		for epid in range( 1, ep_total + 1 ):
 			ai.AddBiliEp( av + '/index_' + unicode(epid)  + '.html', eid, epid )
 		del ai
@@ -160,8 +153,8 @@ def SearchBilibili( name, ep = None ):
 	global URL_BILI_SEARCH, ERROR_NET, FILE_COOKIE_BILI, BILI_SEARCH_PREFIX_SINGLE, BILI_SEARCH_PREFIX_COLLECTION
 
 	# 加上搜索范围
-	if ep : keyword = name + ' ' + str(ep) + BILI_SEARCH_PREFIX_SINGLE
-	else : keyword = name + BILI_SEARCH_PREFIX_COLLECTION
+	if ep : keyword = name + ' ' + str(ep) + ' @' + BILI_SEARCH_PREFIX_SINGLE
+	else : keyword = name + ' @' + BILI_SEARCH_PREFIX_COLLECTION
 
 	# 连接
 	c = Haruka.GetWithCookie( URL_BILI_SEARCH % quote_plus(keyword), FILE_COOKIE_BILI )
@@ -183,9 +176,10 @@ def SearchBilibili( name, ep = None ):
 	
 # 查找合集
 def FindCollection( results ):
-	# 只要有返回集，验证类型是专辑二次元就行了
+	global BILI_SEARCH_PREFIX_COLLECTION
+	# 只要有返回集，验证类型是完结动画就行了
 	for index in range(len(results)):
-		if results[str(index)]['typename'].encode('utf-8') == '專輯二次元' :
+		if results[str(index)]['typename'].encode('utf-8') == BILI_SEARCH_PREFIX_COLLECTION:
 			return results[str(index)]['aid']
 
 	# 如果运行到这里就是没有匹配的结果了
