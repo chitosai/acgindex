@@ -91,3 +91,13 @@ def UpdateEntryWithAlterName( bgmid, source, index_name, real_name ):
 	UpdateEntry(bgmid)
 
 	return True
+
+# 清理自动产生100个ep时留下的多余条目
+def ClearEmptyEp():
+	ai = Ai()
+	sql = 'SELECT * FROM `entry` WHERE `total` = 100'
+	r = ai.Query(sql)
+	del ai
+
+	for item in r:
+	    UpdateEntryTotal(item)

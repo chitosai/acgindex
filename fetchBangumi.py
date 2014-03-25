@@ -110,6 +110,46 @@ def FetchSubjectFromBangumi( id ):
 	# 成功获取返回True
 	return True
 
+# 重抓total
+def UpdateEntryTotal( item ):
+	global URL_BGM, CATE_BGM, ERROR_NET
+
+	bid = item['bgm']
+	eid = item['id']
+
+	# 获取页面
+	c = Haruka.Get( URL_BGM + str(bid) )
+	if not c : 
+		return ERROR_NET # 网络有问题的话就跳过
+
+	# 查找总话数
+	m = re.search( re_total, c )
+	if m:
+		total = m.group(1)
+	else:
+		Tsukasa.log('[没找到话数字段] eid: %s | bid: %s' % (eid, bid))
+		return False
+
+	# 更新entry.total
+	ai = Ai()
+	ai.UpdateTotalEpOfAnEntry( total, bid )
+
+	# 清理ep表中多余的话数
+	sql = 'SELECT COUNT(*) FROM `ep` WHERE `eid` = %s'
+	ep_total = ai.Query(sql, (eid))[0]['COUNT(*)']
+
+	# 这个地方跳过类似海贼王这种大长篇
+	# 海贼王的总话数为*，因此entry.total = 100
+	# 而ep表中的条目远多于100，这种情况不处理
+	if ep_total > total:
+		Tsukasa.log('[话数少于ep条目] eid: %s | bid: %s' % (eid, bid))
+		return False
+
+	sql = 'DELETE FROM `ep` WHERE `eid` = %s AND `epid` > %s'
+	ai.Run(sql, (eid, total))
+
+	Tsukasa.debug('[清除空白条目] DELETE FROM `ep` WHERE `eid` = %s AND `epid` > %s' % (eid, total))
+
 #
 # 抓章节
 #
