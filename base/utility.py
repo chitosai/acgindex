@@ -6,6 +6,7 @@ import time
 import socket
 import zlib
 import traceback
+import smtplib
 
 from StringIO import StringIO
 from gzip import GzipFile
@@ -377,3 +378,27 @@ class Tsukasa:
 		finally:
 			f.write( Tsukasa.GetTime() + message + '\n' )
 			f.close()
+
+class Risa:
+
+	# 发送邮件
+	@staticmethod
+	def sendmail(message):
+		global NOTIFY_SERV, NOTIFY_FROM, NOTIFY_PASS, NOTIFY_TO
+
+		head = [
+			'From: ACGINDEX提醒姬', 
+			'To: %s' % NOTIFY_TO, 
+			'Subject: 需要人工处理'
+		]
+		body = ['这是我记录的log:\r\n']
+		body.extend(message)
+		body.append('\r\n')
+		body.append('http://nanasaki.acgindex.us/log')
+
+		content  = '\r\n\r\n'.join(['\r\n'.join(head), '\r\n'.join(body)])
+
+		mail = smtplib.SMTP(NOTIFY_SERV)
+		# mail.set_debuglevel(1)
+		mail.login(NOTIFY_FROM, NOTIFY_PASS)
+		mail.sendmail(NOTIFY_FROM, NOTIFY_TO, content)

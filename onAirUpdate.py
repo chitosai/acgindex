@@ -3,11 +3,12 @@ import datetime, json
 
 from fix import *
 
+NEED_HANDLE = []
 #
 # 每小时执行一次，查找番组资源
 #
 def UpdateBili():
-	global ERROR_NET, URL_BILI_ON_AIR
+	global ERROR_NET, URL_BILI_ON_AIR, NEED_HANDLE
 
 	# 获取周日的列表，这样可以拿到所有番组的lastupdate
 	c = Haruka.Get( URL_BILI_ON_AIR )
@@ -46,7 +47,9 @@ def UpdateBili():
 
 			# 此番应该是需要添加bili别名
 			if not local_entry:
-				Tsukasa.debug('[NO ENTRY] name: %s' % remote_name.encode('utf-8'))
+				log = '[NO ENTRY] name: %s' % remote_name.encode('utf-8')
+				Tsukasa.debug(log)
+				NEED_HANDLE.append(log)
 				continue
 			else:
 				local_entry = local_entry[0]
@@ -64,7 +67,9 @@ def UpdateBili():
 			# ep表为空，这个情况应该是在一个季度刚开始连载时
 			# 如果在连载中出现这个提示应该是出问题了吧
 			if not local_ep:
-				Tsukasa.debug('[NO EP] id: %s | bid: %s | name: %s' % (local_id, local_bid, remote_name.encode('utf-8')))
+				log = '[NO EP] id: %s | bid: %s | name: %s' % (local_id, local_bid, remote_name.encode('utf-8'))
+				Tsukasa.debug(log)
+				NEED_HANDLE.append(log)
 				# 自动添加ep表
 				UpdateEntry(local_bid)
 				continue
@@ -109,10 +114,14 @@ if __name__ == '__main__':
 			try:
 				UpdateBili()
 			except Exception, e:
-				Tsukasa.debug('Error: %s' % e)
+				Tsukasa.debug('Error: %s' % e, True)
 				Tsukasa.debug(traceback.format_exc())
 				
 			Tsukasa.debug('END\n')
+
+			# 如果有需要人工处理的条目就发个邮件给我
+			if len(NEED_HANDLE) > 0:
+				Risa.sendmail(NEED_HANDLE)
 
 	# 没有传入参数
 	else : Tsukasa.debug('No param specified')
