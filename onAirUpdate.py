@@ -114,7 +114,7 @@ if __name__ == '__main__':
 			try:
 				UpdateBili()
 			except Exception, e:
-				Tsukasa.debug('Error: %s' % e, True)
+				Tsukasa.debug('Error: %s' % e)
 				Tsukasa.debug(traceback.format_exc())
 				
 			Tsukasa.debug('END\n')
