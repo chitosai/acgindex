@@ -8,7 +8,7 @@ from base.utility import *
 re_name_cn = re.compile('<li><span class="tip">中文名: </span>(.+)</li>')
 re_h1      = re.compile('<h1 class="nameSingle">[\r\n\s]*<a href="/subject/(\d+)" title=".*">(.+)</a>[\r\n\s]*(?:<small class="grey">.+</small>)*[\s]*</h1>')
 re_tags    = re.compile('<li><span class="tip"(?: style="visibility:hidden;")?>别名: </span>(.+?)</li>')
-re_cate    = re.compile('<a href="/(\w+)"\s?class="focus">')
+re_cate    = re.compile('<a href="/(\w+)" class="focus chl\s?\w*">')
 re_cover   = re.compile('<a href="(.+?)" title=".+?" alt=".+?" class="thickbox cover">')
 re_total   = re.compile('<li><span class="tip">话数: </span>(\d+?)</li>')
 
@@ -145,7 +145,7 @@ def UpdateEntryTotal( item ):
 		Tsukasa.log('[话数少于ep条目] eid: %s | bid: %s' % (eid, bid))
 		return False
 
-	sql = 'DELETE FROM `ep` WHERE `eid` = %s AND `epid` > %s'
+	sql = 'DELETE FROM `ep` WHERE `eid` = %s AND `epid` > %s AND (`bili` = \'\' OR `bili` = \'-1\')'
 	ai.Run(sql, (eid, total))
 
 	Tsukasa.debug('[清除空白条目] DELETE FROM `ep` WHERE `eid` = %s AND `epid` > %s' % (eid, total))
