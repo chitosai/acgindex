@@ -31,9 +31,9 @@ BILI_SEARCH_PREFIX_SINGLE = '新番'
 BILI_SEARCH_PREFIX_COLLECTION = '完结动画'
 
 # 地址前缀
-URL_BILI					= 'http://www.bilibili.tv/video/av%s/'
-URL_BILI_SEARCH             = 'http://api.bilibili.tv/search?type=json&keyword=%s&page=1&order=default&appkey=' + BILI_APPKEY
-URL_BILI_ON_AIR             = 'http://api.bilibili.tv/bangumi?type=json&btype=2&weekday=0&appkey=' + BILI_APPKEY
+URL_BILI					= 'http://www.bilibili.com/video/av%s/'
+URL_BILI_SEARCH             = 'http://api.bilibili.com/search?type=json&keyword=%s&page=1&order=default&appkey=' + BILI_APPKEY
+URL_BILI_ON_AIR             = 'http://api.bilibili.com/bangumi?type=json&btype=2&weekday=0&appkey=' + BILI_APPKEY
 URL_BGM						= 'http://bgm.tv/subject/'
 URL_KTXP					= 'http://bt.ktxp.com'
 URL_KTXP_SEARCH_COLLECTION	= URL_KTXP + '/search.php?sort_id=28&order=seeders&keyword='
