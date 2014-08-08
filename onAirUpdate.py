@@ -24,8 +24,7 @@ def UpdateBili():
 	# 更新番组
 	local_time = time.time()
 	on_air_list = r['list']
-	for each in on_air_list:
-		remote_entry = on_air_list[each]
+	for remote_entry in on_air_list:
 		remote_time = remote_entry['lastupdate']
 		remote_name = remote_entry['title']
 		remote_epid = int(remote_entry['bgmcount'])

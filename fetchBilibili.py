@@ -179,8 +179,8 @@ def FindCollection( results ):
 	global BILI_SEARCH_PREFIX_COLLECTION
 	# 只要有返回集，验证类型是完结动画就行了
 	for index in range(len(results)):
-		if results[str(index)]['typename'].encode('utf-8') == BILI_SEARCH_PREFIX_COLLECTION:
-			return results[str(index)]['aid']
+		if results[index]['typename'].encode('utf-8') == BILI_SEARCH_PREFIX_COLLECTION:
+			return results[index]['aid']
 
 	# 如果运行到这里就是没有匹配的结果了
 	return False
@@ -188,8 +188,8 @@ def FindCollection( results ):
 # 查找单话
 def FindEp( name, ep, results ):
 	for index in range(len(results)):
-		if MatchTitle( name, ep, results[str(index)]['title'] ):
-			return results[str(index)]['aid']
+		if MatchTitle( name, ep, results[index]['title'] ):
+			return results[index]['aid']
 
 	# 如果运行到这里就是没有匹配的结果了
 	return False
