@@ -103,7 +103,13 @@ def FetchSubjectFromBangumi( id ):
 		# 获取图片
 		m = re.search( re_cover, c )
 		if m:
-			if not Haruka.GetImage( eid, cid, m.group(1)) : return '获取图片时网络超时'
+			image_url = m.group(1)
+
+			# sai好像去掉了图片地址中的协议，改成了//开头，这里加上协议
+			if image_url.startswith('//'):
+				image_url = 'http:' + image_url
+
+			if not Haruka.GetImage( eid, cid, image_url) : return '获取图片时网络超时'
 		else:
 			return True # 这个条目没有封面，没有就没有咯，没啥值得记录的所以还是返回True吧
 
