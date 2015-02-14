@@ -150,11 +150,11 @@ def LookForBiliResource( entry, name, forceEP = False ):
 
 # 通过bili的API查找结果
 def SearchBilibili( name, ep = None ):
-	global URL_BILI_SEARCH, ERROR_NET, FILE_COOKIE_BILI, BILI_SEARCH_PREFIX_SINGLE, BILI_SEARCH_PREFIX_COLLECTION
+	global URL_BILI_SEARCH, ERROR_NET, FILE_COOKIE_BILI
 
-	# 加上搜索范围
-	if ep : keyword = name + ' ' + str(ep) + ' @' + BILI_SEARCH_PREFIX_SINGLE
-	else : keyword = name + ' @' + BILI_SEARCH_PREFIX_COLLECTION
+	# 加上话数
+	if ep : keyword = name + ' ' + str(ep)
+	else : keyword = name
 
 	# 连接
 	c = Haruka.GetWithCookie( URL_BILI_SEARCH % quote_plus(keyword), FILE_COOKIE_BILI )
@@ -187,9 +187,11 @@ def FindCollection( results ):
 
 # 查找单话
 def FindEp( name, ep, results ):
+	global BILI_SEARCH_PREFIX_SINGLE
 	for index in range(len(results)):
-		if MatchTitle( name, ep, results[index]['title'] ):
-			return results[index]['aid']
+		if results[index]['typename'].encode('utf-8') == BILI_SEARCH_PREFIX_SINGLE:
+			if MatchTitle( name, ep, results[index]['title'] ):
+				return results[index]['aid']
 
 	# 如果运行到这里就是没有匹配的结果了
 	return False
