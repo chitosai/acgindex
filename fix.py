@@ -29,9 +29,23 @@ def UpdateEntry( bid, forceEP = True ):
 	if '数据库中没有查询您所指定的条目' in c :
 		return False
 
-	#
-	# 这里不重新抓取中文、日文名是怕如果人工修改过那两个字段，重新自动抓取就白改了
-	#
+	# 查找中文名
+	m = re.search( re_name_cn, c )
+	if m :
+		name_cn = m.group(1)
+	else:
+		name_cn = None
+	
+	# 查找h1
+	m = re.search( re_h1, c )
+	if m :
+		name_jp = m.group(2)
+	else:
+		return '无法获取h1'
+
+	# 没有中文名时说明本身就是中文作品
+	if not name_cn:
+		name_cn = name_jp
 
 	# 动画作品要获取总话数及每话信息
 	total = -1
@@ -56,7 +70,7 @@ def UpdateEntry( bid, forceEP = True ):
 
 	# 更新entry表的ep数据
 	ai = Ai()
-	r = ai.UpdateTotalEpOfAnEntry( total, bid )
+	r = ai.UpdateEntry(name_cn, name_jp, total, bid)
 	if type(r) == bool and not r : return '写入数据库出错'
 
 	# 获取TAGS

@@ -337,8 +337,8 @@ class Ai:
 	###
 
 	# 更新条目
-	def UpdateTotalEpOfAnEntry( self, *args ):
-		sql = "UPDATE `entry` SET `total` = %s WHERE `bgm` = %s"
+	def UpdateEntry( self, *args ):
+		sql = "UPDATE `entry` SET `name_cn` = %s, `name_jp` = %s, `total` = %s WHERE `bgm` = %s"
 		return self.Run( sql, args )
 
 	# 更新ep
