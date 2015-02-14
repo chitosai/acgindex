@@ -8,7 +8,7 @@ from base.utility import *
 ###
 
 # bili无效视频
-BILI_INVALID_FLAG = ['生肉', '被退回']
+BILI_INVALID_FLAG = ['生肉', '被退回', '转码中']
 
 # 话数 阿拉伯数字转其他表示方法
 EP_IN_NUM   = ['01','02','03','04','05','06','07','08','09','10']
